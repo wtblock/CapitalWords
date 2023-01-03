@@ -1,6 +1,6 @@
-// stdafx.cpp : source file that includes just the standard includes
-// CapitalWords.pch will be the pre-compiled header
-// stdafx.obj will contain the pre-compiled type information
+/////////////////////////////////////////////////////////////////////////////
+// Copyright © by W. T. Block, all rights reserved
+/////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
 

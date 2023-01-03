@@ -16,6 +16,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+    <Text Include="words.txt" />
+    <Text Include="words_alpha.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -28,6 +30,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CapitalWords.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyedCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
