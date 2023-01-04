@@ -5,7 +5,6 @@
 #include "stdafx.h"
 #include "CHelper.h"
 #include "CapitalWords.h"
-#include "KeyedCollection.h"
 #include <vector>
 
 using namespace std;
@@ -204,7 +203,8 @@ void StripParenthesis( vector<CString>& Output )
 } // StripParenthesis
 
 /////////////////////////////////////////////////////////////////////////////
-// strip a period from the last word if not a standard suffix like Jr. and Sr.
+// strip a period from the last word if not a standard suffix 
+// like O.P., Jr., and Sr.
 void StripPeriod( vector<CString>& Output )
 {
 	const size_t nWords = Output.size();
@@ -215,7 +215,12 @@ void StripPeriod( vector<CString>& Output )
 		const bool bTrailingPeriod = csLast.Right( 1 ) == _T( "." );
 		if ( bTrailingPeriod )
 		{
-			if ( csLast != _T( "Sr." ) && csLast != _T( "Jr." ) )
+			if 
+			( 
+				csLast != _T( "O.P." ) &&
+				csLast != _T( "Sr." ) &&
+				csLast != _T( "Jr." )
+			)
 			{
 				csLast.TrimRight( _T( "." ) );
 			}
@@ -296,6 +301,11 @@ bool IsTitle( CString input )
 		input == _T( "(Mr." ) ||
 		input == _T( "(Mr.)" ) ||
 		input == _T( "Mr.)" ) ||
+
+		input == _T( "St." ) ||
+		input == _T( "(St." ) ||
+		input == _T( "(St.)" ) ||
+		input == _T( "St.)" ) ||
 
 		input == _T( "Dr." ) ||
 		input == _T( "(Dr." ) ||
@@ -383,7 +393,7 @@ bool IgnoreWord( CString word, CKeyedCollection< CString, int >& words )
 bool BuildIgnoreWords( CString csPath, CKeyedCollection< CString, int >& words )
 {
 	bool bOK = false;
-	const CString csFolder = CHelper::GetDirectory( csPath );
+	const CString csFolder = CHelper::GetFolder( csPath );
 	const CString csData = csFolder + _T( "words.txt" );
 	if ( !::PathFileExists( csData ) )
 	{
@@ -464,12 +474,13 @@ bool BuildIgnoreWords( CString csPath, CKeyedCollection< CString, int >& words )
 
 /////////////////////////////////////////////////////////////////////////////
 // create a collection of name suffixes
-void BuildSuffixData( CKeyedCollection< CString, int >& suffixes )
+void BuildSuffixData()
 {
 	CString arrValues[] = 
 	{
 		_T( "Jr." ),
 		_T( "Sr." ),
+		_T( "O.P." ),
 		_T( "III" ),
 		_T( "IV" ),
 		_T( "V" ),
@@ -486,25 +497,25 @@ void BuildSuffixData( CKeyedCollection< CString, int >& suffixes )
 		(
 			new int( 1 )
 		);
-		suffixes.add( node, pCount );
+		m_suffixes.add( node, pCount );
 	}
 } // BuildSuffixData
 
 /////////////////////////////////////////////////////////////////////////////
 // test for a name suffix
-bool IsSuffix( CString input, CKeyedCollection< CString, int >& suffixes )
+bool IsSuffix( CString input )
 {
 	bool value = false;
 
 	// trim some characters except period since period is part of Jr. and Sr.
 	input.Trim( _T( ",;:- " ));
-	value = suffixes.Exists[ input ];
+	value = m_suffixes.Exists[ input ];
 
 	// if the value is false, trim the period for cases like III.
 	if ( !value )
 	{
 		input.Trim( _T( "." ) );
-		value = suffixes.Exists[ input ];
+		value = m_suffixes.Exists[ input ];
 	}
 
 	return value;
@@ -553,6 +564,88 @@ bool IsPeriod( CString& input )
 } // IsPeriod
 
 /////////////////////////////////////////////////////////////////////////////
+// add right column of concordance table where the input is the left
+// side of the table and the output is both columns of the table
+// separated by a tilde (~) character. The second column is: 
+//	"last name,first name"
+CString BuildConcordance( CString input )
+{
+	CString value = input;
+
+	vector<CString> tokens;
+	int nStart = 0;
+	do
+	{
+		const CString csToken = input.Tokenize( _T( " " ), nStart );
+		if ( csToken.IsEmpty() )
+		{
+			break;
+		}
+
+		tokens.push_back( csToken );
+	}
+	while ( true );
+
+	const size_t nLast = tokens.size() - 1;
+	size_t nWord = nLast;
+	bool bFound = false;
+	do
+	{
+		CString csWord = tokens[ nWord ];
+		csWord.Trim( _T( "()," ));
+		if ( IsSuffix( csWord ) )
+		{
+			if ( nWord == 0 )
+			{
+				break;
+			}
+			nWord--;
+			continue;
+		}
+		else if ( IsAnInitial( csWord ) )
+		{
+			if ( nWord == 0 )
+			{
+				break;
+			}
+			nWord--;
+			continue;
+		}
+
+		bFound = true;
+	}
+	while ( !bFound );
+
+	if ( bFound )
+	{
+		// column separator is a tilde character
+		value += _T( "~" );
+
+		// write the last name first
+		for ( size_t nIndex = nWord; nIndex <= nLast; nIndex++ )
+		{
+			value += tokens[ nIndex ];
+			value += " ";
+		}
+
+		// separate the last name from the first with a comma
+		value.Trim();
+		value += _T( ", " );
+
+		// write the first given names
+		for ( size_t nIndex = 0; nIndex < nWord; nIndex++ )
+		{
+			value += tokens[ nIndex ];
+			value += " ";
+		}
+
+		value.Trim();
+	}
+
+	return value;
+} // BuildConcordance
+
+/////////////////////////////////////////////////////////////////////////////
 // collect the output string into the total sorted output collection
 void AddOutputData
 ( 
@@ -562,7 +655,7 @@ void AddOutputData
 	// these are examples of comma separators we want to protect
 	// by replacing the commas with a pipe character
 	csOutput.Replace( _T( ", Sr." ), _T( "| Sr." ) );
-	csOutput.Replace( _T( ", Jr." ), _T( "| Sr." ) );
+	csOutput.Replace( _T( ", Jr." ), _T( "| Jr." ) );
 
 	// handle the case of multiple tokens separated by commas
 	// and semicolons 
@@ -641,9 +734,22 @@ void  BuildOutputString
 		nCount++;
 	}
 
-	// trim trailing whitespace
-	csOutput.TrimRight();
+	// trim trailing characters not associated with a name
+	csOutput.TrimRight( _T( " 0123456789;,:\"" ) );
+	const CString csRight = csOutput.Right( 3 );
 
+	// special handling for trimming a trailing period
+	// to account for the valid suffixes of Sr. and Jr.
+	if 
+	( 
+		csRight != _T( "O.P." ) &&
+		csRight != _T( "Sr." ) &&
+		csRight != _T( "Jr." )
+	)
+	{
+		csOutput.TrimRight( _T( "." ));
+	}
+	
 	// single tokens cannot be a full name
 	if ( nCount < 2 )
 	{
@@ -665,6 +771,9 @@ void  BuildOutputString
 // and build a sorted list of filenames
 int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 {
+	// by default, a concordance table is not output
+	m_bConcordance = false;
+
 	HMODULE hModule = ::GetModuleHandle( NULL );
 	if ( hModule == NULL )
 	{
@@ -694,10 +803,11 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 
 	CString csMessage;
 
-	// display the number of arguments if not 1 to help the user 
+	// display the number of arguments if not 1 or 2 to help the user 
 	// understand what went wrong if there is an error in the
 	// command line syntax
-	if ( nArgs != 1 )
+	bool bUsage = false;
+	if ( nArgs == 2 || nArgs == 3 )
 	{
 		fErr.WriteString( _T( ".\n" ) );
 		csMessage.Format( _T( "The number of parameters are %d\n.\n" ), nArgs - 1 );
@@ -710,9 +820,13 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 			fErr.WriteString( csMessage );
 		}
 	}
+	else // give the user some usage information
+	{
+		bUsage = true;
+	}
 
 	// two arguments expected
-	if ( nArgs != 2 )
+	if ( bUsage )
 	{
 		fErr.WriteString( _T( ".\n" ) );
 		fErr.WriteString
@@ -729,13 +843,8 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 			_T( "  output a text file of the words\n" )
 			_T( "  beginning with a capital letter.\n" )
 			_T( ".\n" )
-			_T( "The input file is in this format:\n" )
+			_T( "The input text file is in this format:\n" )
 			_T( "  single_word\n" )
-			_T( ".\n" )
-			_T( "The output format is as follows:\n" )
-			_T( "  capitalized_single_word ...\n" )
-			_T( "Representing a line of contiguous capitalized words\n" )
-			_T( "  separated by spaces.\n" )
 			_T( ".\n" )
 		);
 
@@ -744,11 +853,21 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 			_T( ".\n" )
 			_T( "Usage:\n" )
 			_T( ".\n" )
-			_T( ".  CapitalWords input_file\n" )
+			_T( ".  CapitalWords input_file [concordance]\n" )
 			_T( ".\n" )
 			_T( "Where:\n" )
 			_T( ".\n" )
 			_T( ".  input_file is the pathname of the input file.\n" )
+			_T( ".  concordance is optional true/false (default).\n" )
+			_T( ".		to determine the type of output:\n" )
+			_T( ".			false - (default) yields a single column of names\n" )
+			_T( ".			true  - yields two columns separated by tilde (~)\n" )
+			_T( ".					which can be pasted into a Word document\n" )
+			_T( ".					to create a concordance table for importing\n" )
+			_T( ".					index markings into another Word document:\n" )
+			_T( ".						\"original_name~last_name, first_name\n" )
+			_T( ".					where original_name is the text from the input\n" )
+			_T( ".					and last_name, first_name is the text in the index.\n" )
 			_T( ".\n" )
 		);
 
@@ -763,6 +882,19 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 
 	// retrieve the pathname
 	const CString csInput = arrArgs[ 1 ];
+
+	// test to see if there is an optional parameter to control the type
+	// of output and if "true" mark the output type to be concordance
+	CString csConcordance = _T( "false" );
+	if ( nArgs == 3 )
+	{
+		csConcordance = arrArgs[ 2 ];
+		csConcordance.MakeLower();
+		if ( csConcordance == _T( "true" ) )
+		{
+			m_bConcordance = true;
+		}
+	}
 
 	// check for file existence
 	bool bExists = false;
@@ -803,8 +935,7 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 	}
 
 	// collection of suffixes like Jr., Sr., III, etc.
-	CKeyedCollection<CString, int> suffixes;
-	BuildSuffixData( suffixes );
+	BuildSuffixData();
 
 	// crawl through the input file parsing the words
 	// and build a corresponding line of output for each
@@ -929,7 +1060,7 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 		else // include text
 		{
 			// look for terminators that end the name
-			const bool bSuffix = IsSuffix( csLine, suffixes );
+			const bool bSuffix = IsSuffix( csLine );
 
 			// a period could be a terminator
 			bool bPeriod = false;
@@ -956,8 +1087,22 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 			// the collection
 			if ( bSuffix )
 			{
-				// collect the output
-				AddOutputData( csOutput, TotalOutput );
+				const size_t nWords = Output.size();
+
+				// if there are only one of two (name, Sr.) words, then there
+				// is not a first and last name
+				if ( nWords > 2 )
+				{
+					// strip enclosed parenthesis if they exist
+					StripParenthesis( Output );
+
+					// the current word is terminating the output if
+					// it ends in a period
+					BuildOutputString( csOutput, Output, Ignore, TotalOutput );
+
+					// collect the output
+					AddOutputData( csOutput, TotalOutput );
+				}
 				
 				// clear the output buffers to start again
 				Output.clear();
@@ -1002,11 +1147,21 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 	// output to the console the unique line we found
 	for ( auto& node : TotalOutput.Items )
 	{
-		csOutput = node.first;
+		const CString csToken = node.first;
+
+		// default to outputting the token that was originally stored
+		CString csOut = csToken;
+
+		// add right column of concordance table if the user
+		// added the second parameter of "true"
+		if ( m_bConcordance == true )
+		{
+			csOut = BuildConcordance( csToken );
+		}
 
 		// write the output line to the console (which
 		// can be redirected to another text file)
-		fOut.WriteString( csOutput + _T( "\n" ));
+		fOut.WriteString( csOut + _T( "\n" ));
 	}
 
 	// all is good
