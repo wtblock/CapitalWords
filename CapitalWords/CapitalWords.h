@@ -16,6 +16,9 @@ CKeyedCollection<CString, int> m_TotalOutput;
 // collection of suffixes like Jr., Sr., III, etc.
 CKeyedCollection<CString, int> m_suffixes;
 
+// collection of titles like Mr., Mrs., Miss, Uncle, etc.
+CKeyedCollection<CString, int> m_titles;
+
 // words to ignore read from "words.txt" located with the
 // executable
 CKeyedCollection<CString, int> m_Ignore;

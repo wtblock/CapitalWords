@@ -391,7 +391,21 @@ void StripQuotes( vector<CString>& Output )
 } // StripQuotes
 
 /////////////////////////////////////////////////////////////////////////////
-// strip a period from the last word if not a standard suffix 
+// enclosures are open and close parenthesis and open and close quotes
+// they can be safely stripped if they are at the opening or closing of
+// the output
+void StripEnclosures( vector<CString>& Output )
+{
+	StripQuotes( Output );
+	StripParenthesis( Output );
+
+	// calling a second time in case removing parenthesis exposed the quotes
+	StripQuotes( Output );
+
+} // StripEnclosures
+
+/////////////////////////////////////////////////////////////////////////////
+// strip a period (also !, *, and ?) from the last word if not a standard suffix 
 // like O.P., Jr., and Sr.
 void StripPeriod( vector<CString>& Output )
 {
@@ -410,7 +424,7 @@ void StripPeriod( vector<CString>& Output )
 				csLast != _T( "Jr." )
 			)
 			{
-				csLast.TrimRight( _T( "." ) );
+				csLast.TrimRight( _T( ".!?*" ) );
 			}
 		}
 	}
@@ -505,59 +519,92 @@ bool InvalidInitials( vector<CString>& Output )
 } // InvalidInitials
 
 /////////////////////////////////////////////////////////////////////////////
+// create a collection of name titles (prefixes)
+void BuildTitleData()
+{
+	CString arrValues[] =
+	{
+		_T( "Uncle" ),
+		_T( "(Uncle" ),
+		_T( "(Uncle)" ),
+		_T( "Uncle)" ),
+
+		_T( "Captain" ),
+		_T( "(Captain" ),
+		_T( "(Captain)" ),
+		_T( "Captain)" ),
+
+		_T( "Gov." ),
+		_T( "(Gov." ),
+		_T( "(Gov.)" ),
+		_T( "Gov.)" ),
+
+		_T( "Mrs." ),
+		_T( "(Mrs." ),
+		_T( "(Mrs.)" ),
+		_T( "Mrs.)" ),
+
+		_T( "Mr." ),
+		_T( "(Mr." ),
+		_T( "(Mr.)" ),
+		_T( "Mr.)" ),
+
+		_T( "St." ),
+		_T( "(St." ),
+		_T( "(St.)" ),
+		_T( "St.)" ),
+
+		_T( "Dr." ),
+		_T( "(Dr." ),
+		_T( "(Dr.)" ),
+		_T( "Dr.)" ),
+
+		_T( "Rev." ),
+		_T( "(Rev." ),
+		_T( "(Rev.)" ),
+		_T( "Rev.)" ),
+
+		_T( "Capt." ),
+		_T( "(Capt." ),
+		_T( "(Capt.)" ),
+		_T( "Capt.)" ),
+
+		_T( "Drs." ),
+		_T( "(Drs." ),
+		_T( "(Drs.)" ),
+		_T( "Drs.)" ),
+
+		_T( "Miss" ),
+		_T( "(Miss" ),
+		_T( "(Miss)" ),
+		_T( "Miss)" ),
+	};
+
+	for ( auto& node : arrValues )
+	{
+		shared_ptr<int> pCount = shared_ptr<int>
+		(
+			new int( 1 )
+		);
+		m_titles.add( node, pCount );
+	}
+} // BuildTitleData
+
+/////////////////////////////////////////////////////////////////////////////
 // determine if the input is a known title like Mr., (Mr., Mr.), or (Mr.)
 bool IsTitle( CString input )
 {
 	bool value = false;
-	if
-	(
-		input == _T( "Gov." ) ||
-		input == _T( "(Gov." ) ||
-		input == _T( "(Gov.)" ) ||
-		input == _T( "Gov.)" ) ||
 
-		input == _T( "Mrs." ) ||
-		input == _T( "(Mrs." ) ||
-		input == _T( "(Mrs.)" ) ||
-		input == _T( "Mrs.)" ) ||
+	// trim some characters except period since period is part of Mr. and Mrs.
+	input.Trim( _T( ",;:- " ) );
+	value = m_titles.Exists[ input ];
 
-		input == _T( "Mr." ) ||
-		input == _T( "(Mr." ) ||
-		input == _T( "(Mr.)" ) ||
-		input == _T( "Mr.)" ) ||
-
-		input == _T( "St." ) ||
-		input == _T( "(St." ) ||
-		input == _T( "(St.)" ) ||
-		input == _T( "St.)" ) ||
-
-		input == _T( "Dr." ) ||
-		input == _T( "(Dr." ) ||
-		input == _T( "(Dr.)" ) ||
-		input == _T( "Dr.)" ) ||
-
-		input == _T( "Rev." ) ||
-		input == _T( "(Rev." ) ||
-		input == _T( "(Rev.)" ) ||
-		input == _T( "Rev.)" ) ||
-
-		input == _T( "Capt." ) ||
-		input == _T( "(Capt." ) ||
-		input == _T( "(Capt.)" ) ||
-		input == _T( "Capt.)" ) ||
-
-		input == _T( "Drs." ) ||
-		input == _T( "(Drs." ) ||
-		input == _T( "(Drs.)" ) ||
-		input == _T( "Drs.)" ) ||
-
-		input == _T( "Miss" ) ||
-		input == _T( "(Miss" ) ||
-		input == _T( "(Miss)" ) ||
-		input == _T( "Miss)" )
-	)
+	// if the value is false, trim the period for cases like Uncle.
+	if ( !value )
 	{
-		value = true;
+		input.Trim( _T( "." ) );
+		value = m_titles.Exists[ input ];
 	}
 
 	return value;
@@ -580,42 +627,6 @@ bool InvalidTitle( vector<CString>& Output )
 
 	return value;
 } // InvalidTitle
-
-/////////////////////////////////////////////////////////////////////////////
-// returns true if the word should be ignored
-bool IgnoreWord( CString word )
-{
-	bool value = false;
-
-	const bool bTitle = IsTitle( word );
-	if ( bTitle )
-	{
-		return value;
-	}
-
-	const bool bInitial = IsAnInitial( word );
-	if ( bInitial )
-	{
-		return value;
-	}
-
-	CString csLower = word;
-	csLower.MakeLower();
-	const int nLen = csLower.GetLength();
-
-	// ignore if the lowercase version is in the  collection
-	value = m_Ignore.Exists[ csLower ];
-	if ( !value )
-	{
-		csLower.Trim
-		(
-			m_csAccent + m_csOpenQuote + m_csCloseQuote + _T( "(.,;)" )
-		);
-		value = m_Ignore.Exists[ csLower ];
-	}
-
-	return value;
-} // IgnoreWord
 
 /////////////////////////////////////////////////////////////////////////////
 // build a map of words to ignore given the path of the executable
@@ -808,6 +819,110 @@ bool IsPeriod( CString& input )
 } // IsPeriod
 
 /////////////////////////////////////////////////////////////////////////////
+// strips plural suffix from the given word
+bool HandlePlural( CString& word )
+{
+	bool value = true;
+
+	// Unicode accent character
+	if ( word.Right( 4 ) == m_csAccent + _T( "s" ) )
+	{
+		word.TrimRight( m_csAccent + _T( "s" ) );
+	}
+	else if ( word.Right( 4 ) == m_csAccent + _T( "S" ) )
+	{
+		word.TrimRight( m_csAccent + _T( "S" ) );
+	}
+
+	// ASCII accent character
+	else if ( word.Right( 2 ) == _T( "'s" ) )
+	{
+		word.TrimRight( _T( "'s" ) );
+	}
+	else if ( word.Right( 2 ) == _T( "'S" ) )
+	{
+		word.TrimRight( _T( "'S" ) );
+	}
+	else
+	{
+		value = false;
+	}
+
+	return value;
+} // HandlePlural
+
+/////////////////////////////////////////////////////////////////////////////
+// returns true if the word should be ignored, i.e. 
+// not included in the output vector
+bool IgnoreWord( CString word )
+{
+	bool value = false;
+
+	// ignore empty lines or single characters
+	int nLen = word.GetLength();
+	if ( nLen < 2 )
+	{
+		value = true;
+		return value;
+	}
+
+	// ignore lowercase words
+	const bool bUpperCase = IsUppercase( word );
+	if ( !bUpperCase )
+	{
+		value = true;
+		return value;
+	}
+
+	// titles are automatically allowed
+	const bool bTitle = IsTitle( word );
+	if ( bTitle )
+	{
+		return value;
+	}
+
+	// suffixes are automatically allowed
+	const bool bSuffix = IsSuffix( word );
+	if ( bSuffix )
+	{
+		return value;
+	}
+
+	// initials are automatically allowed
+	const bool bInitial = IsAnInitial( word );
+	if ( bInitial )
+	{
+		return value;
+	}
+
+	CString csLower = word;
+	csLower.MakeLower();
+
+	// ignore if the lowercase version is in the  collection
+	value = m_Ignore.Exists[ csLower ];
+	if ( !value )
+	{
+		csLower.Trim
+		(
+			m_csAccent + m_csOpenQuote + m_csCloseQuote + _T( "\"(.',;)" )
+		);
+
+		// single letters are ignored
+		nLen = csLower.GetLength();
+		value = nLen < 2;
+
+		// if still not being ignored, test to see if 
+		// the word is in the ignore word collection
+		if ( !value )
+		{
+			value = m_Ignore.Exists[ csLower ];
+		}
+	}
+
+	return value;
+} // IgnoreWord
+
+/////////////////////////////////////////////////////////////////////////////
 // add right column of concordance table where the input is the left
 // side of the table and the output is both columns of the table
 // separated by a tilde (~) character. The second column is: 
@@ -949,8 +1064,41 @@ void AddOutputData
 		}
 
 		// there should be at least two words separated by spaces
-		const int nPos = csToken.FindOneOf( _T( " " ));
+		int nPos = csToken.FindOneOf( _T( " " ));
 		if ( nPos == -1 )
+		{
+			continue;
+		}
+
+		// make sure the last word in this token is not an initial
+		// beginning with parsing the token into words
+		vector<CString> words;
+		nPos = 0;
+		do
+		{
+			const CString csWord = csToken.Tokenize( _T( " " ), nPos );
+			if ( csWord.IsEmpty() )
+			{
+				break;
+			}
+
+			words.push_back( csWord );
+		}
+		while( true );
+
+		// the number of words parsed from the token
+		const size_t nWords = words.size();
+
+		// a collection of names will very often only have a first
+		// and middle name, so only accept a minimum of three
+		// names
+		if ( nWords < 3 )
+		{
+			continue;
+		}
+
+		// the last name of an initial is not allowed
+		if ( IsAnInitial( words[ nWords - 1 ] ) )
 		{
 			continue;
 		}
@@ -1042,9 +1190,6 @@ void  BuildOutputString
 // read the "names.txt" file
 void ReadNames( CStdioFile& file )
 {
-	// collection of suffixes like Jr., Sr., III, etc.
-	BuildSuffixData();
-
 	// read a single line of text
 	CString csLine;
 	do
@@ -1100,9 +1245,6 @@ int ReadWords( CStdioFile& file )
 		return 6;
 	}
 
-	// collection of suffixes like Jr., Sr., III, etc.
-	BuildSuffixData();
-
 	do
 	{
 		// read a single line of text
@@ -1118,15 +1260,8 @@ int ReadWords( CStdioFile& file )
 		// trim characters
 		const CString csTrim( _T( "-'\": " ) );
 
-		// test for an initial
-		const bool bInitial = IsAnInitial( csLine );
-
-		// an initial followed by a period is allowed
-		if ( bInitial )
-		{
-			csLine.Trim( csTrim );
-		}
-		else if ( nLen == 2 && csLine[ 1 ] == ',' )
+		// comma separated token
+		if ( nLen == 2 && csLine[ 1 ] == ',' )
 		{
 			continue;
 		}
@@ -1135,34 +1270,9 @@ int ReadWords( CStdioFile& file )
 			csLine.Trim( csTrim );
 		}
 
-		// potential trimming will change the size
-		nLen = csLine.GetLength();
-
-		// ignore empty lines or single characters
-		if ( csLine.IsEmpty() || nLen == 1 )
-		{
-			continue;
-		}
-
-		// is the first character of the word uppercase
-		const bool bUppercase = IsUppercase( csLine );
-
-		// leading character of the word
-		const TCHAR cFirst = csLine[ 0 ];
-
 		// test for non-capitalized word and if true
 		// the text will be excluded from the output
-		bool bExclude = !bInitial && !bUppercase;
-
-		if ( !bExclude && !bInitial )
-		{
-			// ignore if the lowercase version is in the  collection
-			const bool bIgnore = IgnoreWord( csLine );
-			if ( bIgnore )
-			{
-				bExclude = true;
-			}
-		}
+		bool bExclude = IgnoreWord( csLine );
 
 		// if the word is being excluded from the output,
 		// we need to output what has already been collected
@@ -1193,11 +1303,8 @@ int ReadWords( CStdioFile& file )
 				continue;
 			}
 
-			// strip enclosed parenthesis if they exist
-			StripParenthesis( Output );
-
-			// strip enclosed quotes if they exist
-			StripQuotes( Output );
+			// strip enclosed parenthesis and or quotes if they exist
+			StripEnclosures( Output );
 
 			// all initials is invalid
 			const bool bInvalidInitials = InvalidInitials( Output );
@@ -1229,21 +1336,12 @@ int ReadWords( CStdioFile& file )
 				bPeriod = IsPeriod( csLine );
 			}
 
-			if ( csLine.Right( 2 ) == _T( "'s" ) )
+			// if the line is not terminated with a period
+			// then handle the case of a plural word (*'s, *'S)
+			// by stripping off the plural suffix
+			if ( !bPeriod )
 			{
-				csLine.TrimRight( _T( "'s" ) );
-			}
-			else if ( csLine.Right( 2 ) == _T( "'S" ) )
-			{
-				csLine.TrimRight( _T( "'S" ) );
-			}
-			else if ( csLine.Right( 4 ) == m_csAccent + _T( "s" ) )
-			{
-				csLine.TrimRight( m_csAccent + _T( "s" ) );
-			}
-			else if ( csLine.Right( 4 ) == m_csAccent + _T( "S" ) )
-			{
-				csLine.TrimRight( m_csAccent + _T( "S" ) );
+				HandlePlural( csLine );
 			}
 
 			// add the line to the output array
@@ -1259,8 +1357,8 @@ int ReadWords( CStdioFile& file )
 				// is not a first and last name
 				if ( nWords > 2 )
 				{
-					// strip enclosed parenthesis if they exist
-					StripParenthesis( Output );
+					// strip enclosed parenthesis and or quotes if they exist
+					StripEnclosures( Output );
 
 					// the current word is terminating the output if
 					// it ends in a period
@@ -1276,8 +1374,8 @@ int ReadWords( CStdioFile& file )
 			}
 			else if ( bPeriod )
 			{
-				// strip enclosed parenthesis if they exist
-				StripParenthesis( Output );
+				// strip enclosed parenthesis and or quotes if they exist
+				StripEnclosures( Output );
 
 				// the current word is terminating the output if
 				// it ends in a period
@@ -1497,6 +1595,12 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 		m_bNames = true;
 		m_bConcordance = true;
 	}
+
+	// collection of suffixes like Jr., Sr., III, etc.
+	BuildSuffixData();
+
+	// create a collection of name titles (prefixes)
+	BuildTitleData();
 
 	// building concordance file directly?
 	if ( m_bNames == true )
