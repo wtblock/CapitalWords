@@ -564,6 +564,11 @@ void BuildTitleData()
 		_T( "(Rev.)" ),
 		_T( "Rev.)" ),
 
+		_T( "Fr." ),
+		_T( "(Fr." ),
+		_T( "(Fr.)" ),
+		_T( "Fr.)" ),
+
 		_T( "Capt." ),
 		_T( "(Capt." ),
 		_T( "(Capt.)" ),
@@ -1047,7 +1052,8 @@ void AddOutputData
 	csOutput.Replace( _T( ", Jr." ), _T( "| Jr." ) );
 
 	// handle the case of multiple tokens separated by commas
-	// and semicolons 
+	// and semicolons by first collecting all of the full names
+	vector<CString> fullNames;
 	int nStart = 0;
 	const CString csDelim( _T( ",;" ));
 	do
@@ -1070,13 +1076,27 @@ void AddOutputData
 			continue;
 		}
 
-		// make sure the last word in this token is not an initial
-		// beginning with parsing the token into words
+		// replace any pipe characters with commas
+		csToken.Replace( '|', ',' );
+
+		// collect the full names
+		fullNames.push_back( csToken );
+
+	}
+	while( true );
+
+	// process the full names by adding unique ones to the 
+	// total output collection
+	const size_t nFullNames = fullNames.size();
+	for ( auto& csFullName : fullNames )
+	{
+		// make sure the last name in this full name is not an initial
+		// beginning with parsing the full name into individual words
+		int nStart = 0;
 		vector<CString> words;
-		nPos = 0;
 		do
 		{
-			const CString csWord = csToken.Tokenize( _T( " " ), nPos );
+			const CString csWord = csFullName.Tokenize( _T( " " ), nStart );
 			if ( csWord.IsEmpty() )
 			{
 				break;
@@ -1084,15 +1104,15 @@ void AddOutputData
 
 			words.push_back( csWord );
 		}
-		while( true );
+		while ( true );
 
-		// the number of words parsed from the token
+		// the number of words in the in this full name
 		const size_t nWords = words.size();
 
-		// a collection of names will very often only have a first
+		// a list of names will very often only have a first
 		// and middle name, so only accept a minimum of three
-		// names
-		if ( nWords < 3 )
+		// names if this is a list (more than one full name)
+		if ( nFullNames > 1 && nWords < 3 )
 		{
 			continue;
 		}
@@ -1103,28 +1123,21 @@ void AddOutputData
 			continue;
 		}
 
-		// replace any pipe characters with commas
-		csToken.Replace( '|', ',' );
-
 		// if the output is unique, add it to the
 		// collection, otherwise increment the 
 		// count of items found
 		shared_ptr<int> pCount;
-		if ( m_TotalOutput.Exists[ csToken ] )
+		if ( m_TotalOutput.Exists[ csFullName ] )
 		{
-			pCount = m_TotalOutput.find( csToken );
+			pCount = m_TotalOutput.find( csFullName );
 			*pCount += 1;
 		}
 		else
 		{
-			pCount = shared_ptr<int>
-			(
-				new int( 1 )
-			);
-			m_TotalOutput.add( csToken, pCount );
+			pCount = shared_ptr<int>( new int( 1 ) );
+			m_TotalOutput.add( csFullName, pCount );
 		}
 	}
-	while( true );
 
 } // AddOutputData
 
