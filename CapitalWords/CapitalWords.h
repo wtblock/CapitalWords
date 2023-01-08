@@ -36,6 +36,19 @@ bool m_bNames;
 const CString m_csAccent = _T( "â€\x99" );
 const CString m_csOpenQuote = _T( "â€\x9c" );
 const CString m_csCloseQuote = _T( "â€\x9d" );
+const CString m_csDumbQuote = _T( "\"" );
+const CString m_csDumbAccent( _T( "'" ));
+
+// sentence terminators
+const CString m_csNonPeriod( _T( ";:!?" ) );
+const CString m_csTerminators( m_csNonPeriod + _T( "." ));
+
+// word decorations
+const CString m_csDecor = 
+	m_csAccent + m_csOpenQuote + m_csCloseQuote +
+	m_csDumbQuote + m_csDumbAccent + m_csNonPeriod;
+const CString m_csDecorAll = m_csDecor + _T( "." );
+
 
 
 

@@ -66,10 +66,12 @@ bool EnclosedParenthesis( vector<CString>& Output )
 				// close parenthesis?
 				CString csLast = Output[ nWords - 1 ];
 				
-				// handle case where there is a comma at the end
-				// before the close parenthesis
-				csLast.TrimRight( _T( ","));
-
+				// handle case where there is a terminator at the end
+				// before the close quote
+				csLast.TrimRight( m_csTerminators );
+				
+				// is the last character of the last word a close
+				// parenthesis?
 				if ( csLast.Right( 1 ) == _T( ")" ))
 				{
 					value = true;
@@ -112,34 +114,59 @@ int CountSubstrings( CString input, vector<CString>& Output )
 // character are matching open and close quotes where:
 //	"xxx yyy" is true
 //	"xxx" "yyy" is false
-// The "quotes" being tested are the Unicode three character strings
+// The "quotes" being tested are smart quotes (Unicode three character strings)
+// or straight quotes
 bool EnclosedQuotes( vector<CString>& Output )
 {
 	bool value = false;
 	const size_t nWords = Output.size();
+	
+	// first and last words
+	CString csFirst, csLast;
+	CString csOpen, csClose;
+	int nOpenLen = 0, nCloseLen = 0;
+	bool bTest = false;
+
 	if ( nWords > 0 )
 	{
+		// first and last words
+		CString csFirst = Output[ 0 ];
+		CString csLast = Output[ nWords - 1 ];
+		csLast.TrimRight( m_csTerminators );
+
+		// smart quotes
 		const int nOpen = CountSubstrings( m_csOpenQuote, Output );
 		const int nClose = CountSubstrings( m_csCloseQuote, Output );
 
+		//dumb quote
+		const int nStraight = CountSubstrings( _T( "\"" ), Output );
+
+		// smart quotes
 		if ( nOpen == 1 && nClose == 1 )
 		{
-			// is first character of first word an open quote?
-			CString csFirst = Output[ 0 ];
-			if ( csFirst.Left( 3 ) == m_csOpenQuote )
-			{
-				// is the last character of the last word a 
-				// close parenthesis?
-				CString csLast = Output[ nWords - 1 ];
-				
-				// handle case where there is a comma at the end
-				// before the close parenthesis
-				csLast.TrimRight( _T( ","));
+			csOpen = m_csOpenQuote;
+			csClose = m_csCloseQuote;
+			nOpenLen = m_csOpenQuote.GetLength();
+			nCloseLen = m_csCloseQuote.GetLength();
+			bTest = true;
+		} 
+		else if ( nStraight == 2 ) // straight quotes
+		{
+			csOpen = _T( "\"" );
+			csClose = _T( "\"" );
+			nOpenLen = csOpen.GetLength();
+			nCloseLen = csClose.GetLength();
+			bTest = true;
+		}
 
-				if ( csLast.Right( 3 ) == m_csCloseQuote )
-				{
-					value = true;
-				}
+		// is first character of first word an open quote?
+		if ( csFirst.Left( nOpenLen ) == csOpen )
+		{
+			// is the last character of the last word a 
+			// close parenthesis?
+			if ( csLast.Right( nCloseLen ) == csClose )
+			{
+				value = true;
 			}
 		}
 	}
@@ -174,8 +201,9 @@ bool OrphanParenthesis( vector<CString>& Output )
 			// close parenthesis?
 			CString csLast = Output[ nWords - 1 ];
 
-			// handle the case where there is a trailing comma
-			csLast.TrimRight( _T( ",." ));
+			// handle case where there is a terminator at the end
+			// before the close quote
+			csLast.TrimRight( m_csTerminators );
 
 			const int nLen = csLast.GetLength();
 			TCHAR cRight = csLast[ nLen - 1 ];
@@ -196,37 +224,66 @@ bool OrphanQuotes( vector<CString>& Output )
 {
 	bool value = false;
 	const size_t nWords = Output.size();
+	
+	// first and last words
+	CString csFirst, csLast;
+	CString csOpen, csClose;
+	CString csLeft, csRight;
+	int nOpenLen = 0, nCloseLen = 0;
+	bool bOpen = false;
+	bool bClose = false;
+	bool bStraight = false;
+
 	if ( nWords > 0 )
 	{
+		// first and last words
+		CString csFirst = Output[ 0 ];
+		CString csLast = Output[ nWords - 1 ];
+		
+		// handle case where there is a terminator at the end
+		// before the close quote
+		csLast.TrimRight( m_csTerminators );
+
+		// smart quotes
 		const int nOpen = CountSubstrings( m_csOpenQuote, Output );
 		const int nClose = CountSubstrings( m_csCloseQuote, Output );
-		if ( nOpen == 1 && nClose == 0 )
-		{
-			// is first character of first word an open quote?
-			const CString csFirst = Output[ 0 ];
+		bOpen = nOpen == 1 && nClose == 0;
+		bClose = nOpen == 0 && nClose == 1;
 
-			// a Unicode quote is three characters long
-			const CString csLeft = csFirst.Left( 3 );
-			if ( csLeft == m_csOpenQuote )
-			{
-				value = true;
-			}
+		// dumb quote
+		const int nStraight = CountSubstrings( _T( "\"" ), Output );
+		bStraight = nStraight == 1;
+
+		// smart quotes
+		if ( bOpen || bClose )
+		{
+			csOpen = m_csOpenQuote;
+			csClose = m_csCloseQuote;
+			nOpenLen = m_csOpenQuote.GetLength();
+			nCloseLen = m_csCloseQuote.GetLength();
+		}
+		else if ( bStraight ) // dumb quotes
+		{
+			csOpen = _T( "\"" );
+			csClose = _T( "\"" );
+			nOpenLen = csOpen.GetLength();
+			nCloseLen = csClose.GetLength();
+		}
+
+		csLeft = csFirst.Left( nOpenLen );
+		csRight = csClose.Left( nCloseLen );
+
+		if ( bOpen )
+		{
+			value = csLeft == csOpen;
 		} 
-		else if ( nOpen == 0 && nClose == 1 )
+		else if ( bClose )
 		{
-			// is the last character of the last word a 
-			// close parenthesis?
-			CString csLast = Output[ nWords - 1 ];
-
-			// handle the case where there is trailing punctuation
-			csLast.TrimRight( _T( ";,." ));
-
-			// a Unicode quote is three characters long
-			const CString csRight = csLast.Right( 3 );
-			if ( csRight == m_csCloseQuote )
-			{
-				value = true;
-			}
+			value = csRight == csClose;
+		}
+		else if ( bStraight )
+		{
+			value = csLeft == csOpen || csRight == csClose;
 		}
 	}
 
@@ -292,64 +349,6 @@ void HandleUnclosedParenthesis( vector<CString>& Output )
 } // HandleUnclosedParenthesis
 
 /////////////////////////////////////////////////////////////////////////////
-// for the case where there is an unclosed quote:
-//		word1, word2, "word3, word4, word5...
-// The output buffer will be replaced with the words prior to the 
-// open quote
-void HandleUnclosedQuotes( vector<CString>& Output )
-{
-	int nOpen = 0;
-	int nClose = 0;
-	vector<CString> buffer;
-
-	int nWord = 0;
-	for ( auto& node : Output )
-	{
-		const int nLen = Output[ nWord ].GetLength();
-		if ( nLen != 0 )
-		{
-			if ( Output[ nWord ].Left( 3 ) == m_csOpenQuote )
-			{
-				nOpen++;
-			}
-			if ( Output[ nWord ].Right( 3 ) == m_csCloseQuote )
-			{
-				nClose++;
-			}
-		}
-
-		nWord++;
-	}
-
-	// test for an unclosed quote pair
-	if ( nOpen == 1 && nClose == 0 )
-	{
-		// copy words from output to buffer until
-		// the open quote is found
-		nWord = 0;
-		for ( auto& node : Output )
-		{
-			if ( nWord == 0 )
-			{
-				buffer.push_back( Output[ nWord++ ] );
-				continue;
-			}
-
-			if ( Output[ nWord ].Left( 3 ) == m_csOpenQuote )
-			{
-				break;
-			}
-
-			buffer.push_back( Output[ nWord++ ] );
-		}
-
-		// return the modified output
-		Output = buffer;
-	}
-
-} // HandleUnclosedQuotes
-
-/////////////////////////////////////////////////////////////////////////////
 // if the whole output vector is enclosed in matching parenthesis, strip
 // the parenthesis from the output or if there is an unmatched open or
 // close parenthesis at the beginning or end, remove it.
@@ -364,7 +363,7 @@ void StripParenthesis( vector<CString>& Output )
 
 		// handle case where there is a comma at the end
 		// before the close parenthesis
-		Output[ nWords - 1 ].TrimRight( _T( ",." ));
+		Output[ nWords - 1 ].TrimRight( m_csNonPeriod );
 		Output[ nWords - 1 ].Remove( ')' );
 	}
 
@@ -381,11 +380,14 @@ void StripQuotes( vector<CString>& Output )
 	if ( bEnclosed || bOrphan )
 	{
 		const size_t nWords = Output.size();
-		Output[ 0 ].TrimLeft( m_csOpenQuote );
+		Output[ 0 ].TrimLeft( m_csOpenQuote + m_csDumbQuote );
 
 		// handle case where there is punctuation at the end
 		// adjacent to the close quote
-		Output[ nWords - 1 ].TrimRight( m_csCloseQuote + _T( ";,." ));
+		Output[ nWords - 1 ].TrimRight
+		( 
+			m_csCloseQuote + m_csDumbQuote + m_csNonPeriod
+		);
 	}
 
 } // StripQuotes
@@ -413,7 +415,7 @@ void StripPeriod( vector<CString>& Output )
 	if ( nWords > 0 )
 	{
 		CString& csLast = Output[ nWords - 1 ];
-		csLast.TrimRight( _T( "\"" ));
+		csLast.TrimRight( m_csDecor );
 		const bool bTrailingPeriod = csLast.Right( 1 ) == _T( "." );
 		if ( bTrailingPeriod )
 		{
@@ -424,7 +426,7 @@ void StripPeriod( vector<CString>& Output )
 				csLast != _T( "Jr." )
 			)
 			{
-				csLast.TrimRight( _T( ".!?*" ) );
+				csLast.TrimRight( m_csTerminators );
 			}
 		}
 	}
@@ -439,10 +441,7 @@ bool IsUppercase( CString input )
 	bool value = false;
 
 	// remove potential trailing comma and close parenthesis
-	input.TrimRight( m_csCloseQuote + _T( ",)" ));
-
-	// remove potential open parenthesis
-	input.TrimLeft( m_csOpenQuote + _T( "(" ));
+	input.Trim( m_csDecor + _T( ",()" ));
 
 	// the length must be greater than zero at this point
 	const int nLen = input.GetLength();
@@ -465,10 +464,7 @@ bool IsAnInitial( CString input )
 	bool value = false;
 
 	// remove potential trailing comma and close parenthesis
-	input.TrimRight( m_csCloseQuote + _T( ",)" ));
-
-	// remove potential open parenthesis
-	input.TrimLeft( m_csOpenQuote + _T( "(" ));
+	input.Trim( m_csDecor + _T( "()," ));
 
 	const int nLen = input.GetLength();
 	if ( nLen == 2 )
@@ -602,7 +598,7 @@ bool IsTitle( CString input )
 	bool value = false;
 
 	// trim some characters except period since period is part of Mr. and Mrs.
-	input.Trim( _T( ",;:- " ) );
+	input.Trim( m_csDecor );
 	value = m_titles.Exists[ input ];
 
 	// if the value is false, trim the period for cases like Uncle.
@@ -755,7 +751,7 @@ bool IsSuffix( CString input )
 	bool value = false;
 
 	// trim some characters except period since period is part of Jr. and Sr.
-	input.Trim( _T( ",;:- " ));
+	input.Trim( m_csDecor );
 	value = m_suffixes.Exists[ input ];
 
 	// if the value is false, trim the period for cases like III.
@@ -780,7 +776,7 @@ bool IsPeriod( CString& input )
 		return value;
 	}
 
-	const CString csPeriodQuote = _T( ".â€\x9d" );
+	CString csPeriod( _T( "." ));
 
 	const int nLen = input.GetLength();
 	int nMinLen = 2;
@@ -806,9 +802,15 @@ bool IsPeriod( CString& input )
 				input.TrimRight( _T( "." ) );
 				value = true;
 			} 
+			else if ( input[ nLen - 2 ] == '.' )
+			{
+				const CString csTrim = input.Left( 2 );
+				input.TrimRight( csTrim );
+				value = true;
+			}
 			else
 			{
-				// test for Unicode period followed by a close quote (.") 
+				const CString csPeriodQuote = csPeriod + m_csCloseQuote;
 				const CString csRight = input.Left( 4 );
 				if ( csRight == csPeriodQuote )
 				{
@@ -907,10 +909,7 @@ bool IgnoreWord( CString word )
 	value = m_Ignore.Exists[ csLower ];
 	if ( !value )
 	{
-		csLower.Trim
-		(
-			m_csAccent + m_csOpenQuote + m_csCloseQuote + _T( "\"(.',;)" )
-		);
+		csLower.Trim( m_csDecorAll + _T( "()," ));
 
 		// single letters are ignored
 		nLen = csLower.GetLength();
@@ -965,7 +964,7 @@ CString BuildConcordance( CString input )
 	do
 	{
 		CString csWord = tokens[ nWord ];
-		csWord.Trim( _T( "()," ));
+		csWord.Trim( m_csDecor );
 		if ( IsSuffix( csWord ) )
 		{
 			if ( nWord == 0 )
@@ -1024,6 +1023,7 @@ CString BuildConcordance( CString input )
 		// remove any parenthesis or quotes
 		Col2.Remove( '(' );
 		Col2.Remove( ')' );
+		Col2.Remove( '\"' );
 		
 		// remove open and close quotes
 		for ( int nChar = 0; nChar < 3; nChar++ )
@@ -1122,6 +1122,8 @@ void AddOutputData
 		{
 			continue;
 		}
+
+		csFullName.Trim( m_csDecor + _T( "()"));
 
 		// if the output is unique, add it to the
 		// collection, otherwise increment the 
@@ -1271,7 +1273,7 @@ int ReadWords( CStdioFile& file )
 		size_t nLen = csLine.GetLength();
 
 		// trim characters
-		const CString csTrim( _T( "-'\": " ) );
+		const CString csTrim( m_csNonPeriod );
 
 		// comma separated token
 		if ( nLen == 2 && csLine[ 1 ] == ',' )
