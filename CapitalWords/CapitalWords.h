@@ -32,22 +32,36 @@ bool m_bConcordance;
 // that is normally the input
 bool m_bNames;
 
-// handle some Unicode cases
-const CString m_csAccent = _T( "â€\x99" );
-const CString m_csOpenQuote = _T( "â€\x9c" );
+// handle some Unicode cases expressed in extended ASCII
+const CString m_csOpenAccent = _T( "â€˜" );
+const CString m_csCloseAccent = _T( "â€™" );
+const CString m_csOpenQuote = _T( "â€œ" );
+// Hex 9D is undefined in extended ASCII
 const CString m_csCloseQuote = _T( "â€\x9d" );
+
+// handle some dumb cases
 const CString m_csDumbQuote = _T( "\"" );
 const CString m_csDumbAccent( _T( "'" ));
+const CString m_csParenthesis( _T( "()" ));
+
+// enclosures
+const CString m_csEnclosures = 
+	m_csOpenAccent + m_csCloseAccent + 
+	m_csOpenQuote + m_csCloseQuote + 
+	m_csDumbQuote + m_csDumbAccent + 
+	m_csParenthesis;
+
+// name separators
+const CString m_csSeparators = _T( ",;:" );
 
 // sentence terminators
-const CString m_csNonPeriod( _T( ";:!?" ) );
+const CString m_csNonPeriod( _T( "!?" ) );
 const CString m_csTerminators( m_csNonPeriod + _T( "." ));
 
 // word decorations
-const CString m_csDecor = 
-	m_csAccent + m_csOpenQuote + m_csCloseQuote +
-	m_csDumbQuote + m_csDumbAccent + m_csNonPeriod;
-const CString m_csDecorAll = m_csDecor + _T( "." );
+const CString m_csDecor = m_csEnclosures;
+const CString m_csDecorAll = m_csEnclosures + m_csTerminators;
+const CString m_csEverything = m_csDecorAll + m_csSeparators;
 
 
 

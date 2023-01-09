@@ -18,6 +18,65 @@ using namespace std;
 CWinApp theApp;
 
 /////////////////////////////////////////////////////////////////////////////
+// strips plural suffix from the given word
+bool HandlePlural( CString& word )
+{
+	bool value = true;
+
+	// Unicode accent character
+	if ( word.Right( 4 ) == m_csCloseAccent + _T( "s" ) )
+	{
+		word.TrimRight( m_csCloseAccent + _T( "s" ) );
+	}
+	else if ( word.Right( 4 ) == m_csCloseAccent + _T( "S" ) )
+	{
+		word.TrimRight( m_csCloseAccent + _T( "S" ) );
+	}
+
+	// ASCII accent character
+	else if ( word.Right( 2 ) == _T( "'s" ) )
+	{
+		word.TrimRight( _T( "'s" ) );
+	}
+	else if ( word.Right( 2 ) == _T( "'S" ) )
+	{
+		word.TrimRight( _T( "'S" ) );
+	}
+	else
+	{
+		value = false;
+	}
+
+	return value;
+} // HandlePlural
+
+/////////////////////////////////////////////////////////////////////////////
+// return the number of given substring in the output vector
+int CountSubstrings( CString input, vector<CString>& Output )
+{
+	int value = 0;
+
+	for ( auto& node : Output )
+	{
+		int nStart = 0;
+		do
+		{
+			const int nPos = node.Find( input, nStart );
+			if ( nPos == -1 )
+			{
+				break;
+			}
+
+			value++;
+			nStart = nPos + 1;
+		}
+		while ( true );
+	}
+
+	return value;
+} // CountSubstrings
+
+/////////////////////////////////////////////////////////////////////////////
 // return the number of given characters in the output vector
 int CountCharacters( TCHAR input, vector<CString>& Output )
 {
@@ -84,32 +143,6 @@ bool EnclosedParenthesis( vector<CString>& Output )
 } // EnclosedParenthesis
 
 /////////////////////////////////////////////////////////////////////////////
-// return the number of given substring in the output vector
-int CountSubstrings( CString input, vector<CString>& Output )
-{
-	int value = 0;
-
-	for ( auto& node : Output )
-	{
-		int nStart = 0;
-		do
-		{
-			const int nPos = node.Find( input, nStart );
-			if ( nPos == -1 )
-			{
-				break;
-			}
-
-			value++;
-			nStart = nPos + 1;
-		}
-		while ( true );
-	}
-
-	return value;
-} // CountSubstrings
-
-/////////////////////////////////////////////////////////////////////////////
 // is the output enclosed in quotes, the first character and last 
 // character are matching open and close quotes where:
 //	"xxx yyy" is true
@@ -159,20 +192,91 @@ bool EnclosedQuotes( vector<CString>& Output )
 			bTest = true;
 		}
 
-		// is first character of first word an open quote?
-		if ( csFirst.Left( nOpenLen ) == csOpen )
+		if ( bTest )
 		{
-			// is the last character of the last word a 
-			// close parenthesis?
-			if ( csLast.Right( nCloseLen ) == csClose )
+			// is first character of first word an open quote?
+			if ( csFirst.Left( nOpenLen ) == csOpen )
 			{
-				value = true;
+				// is the last character of the last word a 
+				// close parenthesis?
+				if ( csLast.Right( nCloseLen ) == csClose )
+				{
+					value = true;
+				}
 			}
 		}
 	}
 
 	return value;
 } // EnclosedQuotes
+
+/////////////////////////////////////////////////////////////////////////////
+// is the output enclosed in Accent, the first character and last 
+// character are matching open and close Accent where:
+//	'xxx yyy' is true
+//	'xxx' 'yyy' is false
+// The "Accent" being tested are smart Accent (Unicode three character strings)
+// or straight Accent
+bool EnclosedAccents( vector<CString>& Output )
+{
+	bool value = false;
+	const size_t nWords = Output.size();
+	
+	// first and last words
+	CString csFirst, csLast;
+	CString csOpen, csClose;
+	int nOpenLen = 0, nCloseLen = 0;
+	bool bTest = false;
+
+	if ( nWords > 0 )
+	{
+		// first and last words
+		CString csFirst = Output[ 0 ];
+		CString csLast = Output[ nWords - 1 ];
+		csLast.TrimRight( m_csTerminators );
+
+		// smart Accent
+		const int nOpen = CountSubstrings( m_csOpenAccent, Output );
+		const int nClose = CountSubstrings( m_csCloseAccent, Output );
+
+		//dumb Accent
+		const int nStraight = CountSubstrings( _T( "\"" ), Output );
+
+		// smart Accent
+		if ( nOpen == 1 && nClose == 1 )
+		{
+			csOpen = m_csOpenAccent;
+			csClose = m_csCloseAccent;
+			nOpenLen = m_csOpenAccent.GetLength();
+			nCloseLen = m_csCloseAccent.GetLength();
+			bTest = true;
+		} 
+		else if ( nStraight == 2 ) // straight Accent
+		{
+			csOpen = _T( "\"" );
+			csClose = _T( "\"" );
+			nOpenLen = csOpen.GetLength();
+			nCloseLen = csClose.GetLength();
+			bTest = true;
+		}
+
+		if ( bTest )
+		{
+			// is first character of first word an open Accent?
+			if ( csFirst.Left( nOpenLen ) == csOpen )
+			{
+				// is the last character of the last word a 
+				// close parenthesis?
+				if ( csLast.Right( nCloseLen ) == csClose )
+				{
+					value = true;
+				}
+			}
+		}
+	}
+
+	return value;
+} // EnclosedAccent
 
 /////////////////////////////////////////////////////////////////////////////
 // an orphan parenthesis is a leading open parenthesis without a close
@@ -291,6 +395,79 @@ bool OrphanQuotes( vector<CString>& Output )
 } // OrphanQuotes
 
 /////////////////////////////////////////////////////////////////////////////
+// an orphan Accent is a leading open Accent without a close
+// or a trailing close Accent without an open
+bool OrphanAccents( vector<CString>& Output )
+{
+	bool value = false;
+	const size_t nWords = Output.size();
+	
+	// first and last words
+	CString csFirst, csLast;
+	CString csOpen, csClose;
+	CString csLeft, csRight;
+	int nOpenLen = 0, nCloseLen = 0;
+	bool bOpen = false;
+	bool bClose = false;
+	bool bStraight = false;
+
+	if ( nWords > 0 )
+	{
+		// first and last words
+		CString csFirst = Output[ 0 ];
+		CString csLast = Output[ nWords - 1 ];
+		
+		// handle case where there is a terminator at the end
+		// before the close Accent
+		csLast.TrimRight( m_csTerminators );
+
+		// smart Accents
+		const int nOpen = CountSubstrings( m_csOpenAccent, Output );
+		const int nClose = CountSubstrings( m_csCloseAccent, Output );
+		bOpen = nOpen == 1 && nClose == 0;
+		bClose = nOpen == 0 && nClose == 1;
+
+		// dumb Accent
+		const int nStraight = CountSubstrings( _T( "\"" ), Output );
+		bStraight = nStraight == 1;
+
+		// smart Accents
+		if ( bOpen || bClose )
+		{
+			csOpen = m_csOpenAccent;
+			csClose = m_csCloseAccent;
+			nOpenLen = m_csOpenAccent.GetLength();
+			nCloseLen = m_csCloseAccent.GetLength();
+		}
+		else if ( bStraight ) // dumb Accents
+		{
+			csOpen = _T( "\"" );
+			csClose = _T( "\"" );
+			nOpenLen = csOpen.GetLength();
+			nCloseLen = csClose.GetLength();
+		}
+
+		csLeft = csFirst.Left( nOpenLen );
+		csRight = csClose.Left( nCloseLen );
+
+		if ( bOpen )
+		{
+			value = csLeft == csOpen;
+		} 
+		else if ( bClose )
+		{
+			value = csRight == csClose;
+		}
+		else if ( bStraight )
+		{
+			value = csLeft == csOpen || csRight == csClose;
+		}
+	}
+
+	return value;
+} // OrphanAccents
+
+/////////////////////////////////////////////////////////////////////////////
 // for the case where the is an unclosed parenthesis:
 //		word1, word2, (word3, word4, word5...
 // The output buffer will be replaced with the words prior to the 
@@ -372,7 +549,7 @@ void StripParenthesis( vector<CString>& Output )
 /////////////////////////////////////////////////////////////////////////////
 // if the whole output vector is enclosed in matching quotes, strip
 // the quotes from the output or if there is an unmatched open or
-// close parenthesis at the beginning or end, remove it.
+// close Quote at the beginning or end, remove it.
 void StripQuotes( vector<CString>& Output )
 {
 	const bool bEnclosed = EnclosedQuotes( Output );
@@ -386,11 +563,34 @@ void StripQuotes( vector<CString>& Output )
 		// adjacent to the close quote
 		Output[ nWords - 1 ].TrimRight
 		( 
-			m_csCloseQuote + m_csDumbQuote + m_csNonPeriod
+			m_csCloseQuote + m_csDumbQuote
 		);
 	}
 
 } // StripQuotes
+
+/////////////////////////////////////////////////////////////////////////////
+// if the whole output vector is enclosed in matching Accents, strip
+// the Accents from the output or if there is an unmatched open or
+// close Accent at the beginning or end, remove it.
+void StripAccents( vector<CString>& Output )
+{
+	const bool bEnclosed = EnclosedAccents( Output );
+	const bool bOrphan = OrphanAccents( Output );
+	if ( bEnclosed || bOrphan )
+	{
+		const size_t nWords = Output.size();
+		Output[ 0 ].TrimLeft( m_csOpenAccent + m_csDumbAccent );
+
+		// handle case where there is punctuation at the end
+		// adjacent to the close Accent
+		Output[ nWords - 1 ].TrimRight
+		( 
+			m_csCloseAccent + m_csDumbAccent
+		);
+	}
+
+} // StripAccents
 
 /////////////////////////////////////////////////////////////////////////////
 // enclosures are open and close parenthesis and open and close quotes
@@ -398,24 +598,46 @@ void StripQuotes( vector<CString>& Output )
 // the output
 void StripEnclosures( vector<CString>& Output )
 {
-	StripQuotes( Output );
-	StripParenthesis( Output );
+	int nCount = 0;
 
-	// calling a second time in case removing parenthesis exposed the quotes
-	StripQuotes( Output );
+	// since the enclosures can enclose other enclosures and we do not
+	// know the order, these have to be called multiple times until
+	// no enclosures are found
+	do
+	{
+		nCount = 0;
+		if ( EnclosedAccents( Output ) )
+		{
+			StripAccents( Output );
+			nCount++;
+		}
+		if ( EnclosedQuotes( Output ) )
+		{
+			StripQuotes( Output );
+			nCount++;
+		}
+		if ( EnclosedParenthesis( Output ) )
+		{
+			StripParenthesis( Output );
+			nCount++;
+		}
+	}
+	while ( nCount > 0 );
 
 } // StripEnclosures
 
 /////////////////////////////////////////////////////////////////////////////
 // strip a period (also !, *, and ?) from the last word if not a standard suffix 
 // like O.P., Jr., and Sr.
-void StripPeriod( vector<CString>& Output )
+void StripTerminators( vector<CString>& Output )
 {
 	const size_t nWords = Output.size();
 	if ( nWords > 0 )
 	{
 		CString& csLast = Output[ nWords - 1 ];
+
 		csLast.TrimRight( m_csDecor );
+
 		const bool bTrailingPeriod = csLast.Right( 1 ) == _T( "." );
 		if ( bTrailingPeriod )
 		{
@@ -431,7 +653,7 @@ void StripPeriod( vector<CString>& Output )
 		}
 	}
 
-} // StripPeriod
+} // StripTerminators
 
 /////////////////////////////////////////////////////////////////////////////
 // does the given string begin with an uppercase character after excluding
@@ -463,8 +685,8 @@ bool IsAnInitial( CString input )
 {
 	bool value = false;
 
-	// remove potential trailing comma and close parenthesis
-	input.Trim( m_csDecor + _T( "()," ));
+	// remove potential trailing decorations
+	input.Trim( m_csDecor + m_csNonPeriod );
 
 	const int nLen = input.GetLength();
 	if ( nLen == 2 )
@@ -579,6 +801,11 @@ void BuildTitleData()
 		_T( "(Miss" ),
 		_T( "(Miss)" ),
 		_T( "Miss)" ),
+
+		_T( "Ms." ),
+		_T( "(Ms." ),
+		_T( "(Ms.)" ),
+		_T( "Ms.)" ),
 	};
 
 	for ( auto& node : arrValues )
@@ -752,6 +979,10 @@ bool IsSuffix( CString input )
 
 	// trim some characters except period since period is part of Jr. and Sr.
 	input.Trim( m_csDecor );
+
+	// before test, remove the plural if present ('s)
+	HandlePlural( input );
+
 	value = m_suffixes.Exists[ input ];
 
 	// if the value is false, trim the period for cases like III.
@@ -765,8 +996,28 @@ bool IsSuffix( CString input )
 } // IsSuffix
 
 /////////////////////////////////////////////////////////////////////////////
-// a period terminates a sequence
-bool IsPeriod( CString& input )
+// tokens are separated by commas, colons, or semi-colons
+bool IsSeparator( CString input )
+{
+	bool value = false;
+
+	const int nLen = input.GetLength();
+	TCHAR cTerm = 0;
+	if ( nLen > 1 )
+	{
+		cTerm = input[ nLen - 1 ];
+
+		value = cTerm == ',' || cTerm == ':' || cTerm == ';';
+	}
+
+	return value;
+} // IsSeparator
+
+/////////////////////////////////////////////////////////////////////////////
+// a set of names is terminated with a period, exclamation point,
+// or question mark accounting for other decorations like accents, quotes
+// and parenthesis
+bool IsTerminated( CString& input, CString csTerm )
 {
 	bool value = false;
 
@@ -776,87 +1027,57 @@ bool IsPeriod( CString& input )
 		return value;
 	}
 
-	CString csPeriod( _T( "." ));
-
-	const int nLen = input.GetLength();
-	int nMinLen = 2;
-	if ( nLen > 0 )
+	// initials are not terminations
+	if ( IsAnInitial( input ) )
 	{
-		// allow for an open parenthesis
-		if ( input[ 0 ] == '(' )
-		{
-			nMinLen++;
-		}
-
-		// allow for a close parenthesis
-		if ( input[ nLen - 1 ] == ')' )
-		{
-			nMinLen++;
-		}
-
-		// not an initial like H. or (H. 
-		if ( nLen > nMinLen )
-		{
-			if ( input[ nLen - 1 ] == '.' )
-			{
-				input.TrimRight( _T( "." ) );
-				value = true;
-			} 
-			else if ( input[ nLen - 2 ] == '.' )
-			{
-				const CString csTrim = input.Left( 2 );
-				input.TrimRight( csTrim );
-				value = true;
-			}
-			else
-			{
-				const CString csPeriodQuote = csPeriod + m_csCloseQuote;
-				const CString csRight = input.Left( 4 );
-				if ( csRight == csPeriodQuote )
-				{
-					input.TrimRight( csPeriodQuote );
-					value = true;
-				}
-			}
-
-		}
+		return value;
 	}
 
+	// suffixes are not terminations
+	if ( IsSuffix( input ) )
+	{
+		return value;
+	}
+
+	// look for any terminator (?, !, or .)
+	const int nPos = input.FindOneOf( csTerm );
+	if ( nPos == -1 )
+	{
+		return value;
+	}
+
+	value = true;
+	input.TrimRight( m_csEverything );
+
 	return value;
+} // IsTerminated
+
+/////////////////////////////////////////////////////////////////////////////
+// a period terminates a sequence
+bool IsPeriod( CString& input )
+{
+	const bool value = IsTerminated( input, _T( "." ) );
+	return value;
+
 } // IsPeriod
 
 /////////////////////////////////////////////////////////////////////////////
-// strips plural suffix from the given word
-bool HandlePlural( CString& word )
+// a question mark terminates a sequence
+bool IsQuestion( CString& input )
 {
-	bool value = true;
-
-	// Unicode accent character
-	if ( word.Right( 4 ) == m_csAccent + _T( "s" ) )
-	{
-		word.TrimRight( m_csAccent + _T( "s" ) );
-	}
-	else if ( word.Right( 4 ) == m_csAccent + _T( "S" ) )
-	{
-		word.TrimRight( m_csAccent + _T( "S" ) );
-	}
-
-	// ASCII accent character
-	else if ( word.Right( 2 ) == _T( "'s" ) )
-	{
-		word.TrimRight( _T( "'s" ) );
-	}
-	else if ( word.Right( 2 ) == _T( "'S" ) )
-	{
-		word.TrimRight( _T( "'S" ) );
-	}
-	else
-	{
-		value = false;
-	}
-
+	const bool value = IsTerminated( input, _T( "?" ) );
 	return value;
-} // HandlePlural
+
+} // IsQuestion
+
+/////////////////////////////////////////////////////////////////////////////
+// an exclamation mark terminates a sequence
+bool IsEclamation( CString& input )
+{
+	const bool value = IsTerminated( input, _T( "!" ) );
+	return value;
+
+} // IsEclamation
 
 /////////////////////////////////////////////////////////////////////////////
 // returns true if the word should be ignored, i.e. 
@@ -909,7 +1130,7 @@ bool IgnoreWord( CString word )
 	value = m_Ignore.Exists[ csLower ];
 	if ( !value )
 	{
-		csLower.Trim( m_csDecorAll + _T( "()," ));
+		csLower.Trim( m_csEverything );
 
 		// single letters are ignored
 		nLen = csLower.GetLength();
@@ -1050,12 +1271,13 @@ void AddOutputData
 	// by replacing the commas with a pipe character
 	csOutput.Replace( _T( ", Sr." ), _T( "| Sr." ) );
 	csOutput.Replace( _T( ", Jr." ), _T( "| Jr." ) );
+	csOutput.Replace( _T( ", .O.P." ), _T( "| .O.P." ) );
 
 	// handle the case of multiple tokens separated by commas
 	// and semicolons by first collecting all of the full names
 	vector<CString> fullNames;
 	int nStart = 0;
-	const CString csDelim( _T( ",;" ));
+	const CString csDelim( m_csSeparators );
 	do
 	{
 		CString csToken = csOutput.Tokenize( csDelim, nStart );
@@ -1063,7 +1285,7 @@ void AddOutputData
 		{
 			break;
 		}
-		csToken.Trim( _T( "-: " ));
+		csToken.Trim( _T( "- " ));
 		if ( csToken.IsEmpty() )
 		{
 			continue;
@@ -1123,7 +1345,7 @@ void AddOutputData
 			continue;
 		}
 
-		csFullName.Trim( m_csDecor + _T( "()"));
+		csFullName.Trim( m_csDecor + m_csEnclosures );
 
 		// if the output is unique, add it to the
 		// collection, otherwise increment the 
@@ -1170,7 +1392,7 @@ void  BuildOutputString
 	}
 
 	// trim trailing characters not associated with a name
-	csOutput.TrimRight( _T( " 0123456789;,:\"" ) );
+	csOutput.TrimRight( m_csDecor + m_csSeparators + _T( " 0123456789" ) );
 	const CString csRight = csOutput.Right( 3 );
 
 	// special handling for trimming a trailing period
@@ -1182,7 +1404,7 @@ void  BuildOutputString
 		csRight != _T( "Jr." )
 	)
 	{
-		csOutput.TrimRight( _T( "." ));
+		csOutput.TrimRight( m_csTerminators );
 	}
 	
 	// single tokens cannot be a full name
@@ -1269,20 +1491,22 @@ int ReadWords( CStdioFile& file )
 			break;
 		}
 
-		// length of the line in characters
-		size_t nLen = csLine.GetLength();
+		// length of the line
+		const size_t nLen = csLine.GetLength();
 
-		// trim characters
-		const CString csTrim( m_csNonPeriod );
-
-		// comma separated token
-		if ( nLen == 2 && csLine[ 1 ] == ',' )
+		// single characters cannot be a name
+		if ( nLen < 2 )
 		{
 			continue;
 		}
-		else
+
+		// separated token
+		const bool bSeparator = IsSeparator( csLine );
+
+		// ignore this word if it is a single letter
+		if ( bSeparator && nLen == 2 )
 		{
-			csLine.Trim( csTrim );
+			continue;
 		}
 
 		// test for non-capitalized word and if true
@@ -1330,8 +1554,8 @@ int ReadWords( CStdioFile& file )
 				continue;
 			}
 
-			// strip trailing period
-			StripPeriod( Output );
+			// strip terminators (?, !, or .)
+			StripTerminators( Output );
 
 			BuildOutputString( csOutput, Output );
 
@@ -1345,16 +1569,27 @@ int ReadWords( CStdioFile& file )
 			const bool bInitial = IsAnInitial( csLine );
 
 			// a period could be a terminator
-			bool bPeriod = false;
+			bool bTerminate = false;
 			if ( !bSuffix && !bInitial )
 			{
-				bPeriod = IsPeriod( csLine );
+				bTerminate = IsPeriod( csLine );
+			}
+			if ( !bTerminate )
+			{
+				if ( IsQuestion( csLine ) )
+				{
+					bTerminate = true;
+				}
+				else if ( IsEclamation( csLine ) )
+				{
+					bTerminate = true;
+				}
 			}
 
 			// if the line is not terminated with a period
 			// then handle the case of a plural word (*'s, *'S)
 			// by stripping off the plural suffix
-			if ( !bPeriod )
+			if ( !bTerminate )
 			{
 				HandlePlural( csLine );
 			}
@@ -1387,7 +1622,7 @@ int ReadWords( CStdioFile& file )
 				Output.clear();
 				csOutput.Empty();
 			}
-			else if ( bPeriod )
+			else if ( bTerminate )
 			{
 				// strip enclosed parenthesis and or quotes if they exist
 				StripEnclosures( Output );
