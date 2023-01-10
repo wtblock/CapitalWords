@@ -142,6 +142,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Text Include="Dictionary.txt" />
+    <Text Include="People.txt" />
     <Text Include="ReadMe.txt" />
     <Text Include="words.txt" />
     <Text Include="words_alpha.txt" />

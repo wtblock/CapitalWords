@@ -18,6 +18,8 @@
     <Text Include="ReadMe.txt" />
     <Text Include="words.txt" />
     <Text Include="words_alpha.txt" />
+    <Text Include="Dictionary.txt" />
+    <Text Include="People.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

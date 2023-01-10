@@ -18,6 +18,50 @@ using namespace std;
 CWinApp theApp;
 
 /////////////////////////////////////////////////////////////////////////////
+// add text to the total output collection to provide unique sorted data
+// to be output when processing is complete
+void CollectOutput( CString& input )
+{
+	// if the output is unique, add it to the
+	// collection, otherwise increment the 
+	// count of items found
+	shared_ptr<int> pCount;
+	if ( m_TotalOutput.Exists[ input ] )
+	{
+		pCount = m_TotalOutput.find( input );
+		*pCount += 1;
+	}
+	else // add the new name
+	{
+		pCount = shared_ptr<int>( new int( 1 ));
+		m_TotalOutput.add( input, pCount );
+	}
+
+} // CollectOutput
+
+/////////////////////////////////////////////////////////////////////////////
+// add text to the ignored words collection to provide unique sorted data
+// to be written to the console when the /People parameter is active
+void CollectIgnoredWords( CString& input )
+{
+	// if the word is unique, add it to the
+	// collection, otherwise increment the 
+	// count of items found
+	shared_ptr<int> pCount;
+	if ( m_Ignore.Exists[ input ] )
+	{
+		pCount = m_Ignore.find( input );
+		*pCount += 1;
+	}
+	else // add the new name
+	{
+		pCount = shared_ptr<int>( new int( 1 ));
+		m_Ignore.add( input, pCount );
+	}
+
+} // CollectIgnoredWords
+
+/////////////////////////////////////////////////////////////////////////////
 // strips plural suffix from the given word
 bool HandlePlural( CString& word )
 {
@@ -858,18 +902,18 @@ bool InvalidTitle( vector<CString>& Output )
 
 /////////////////////////////////////////////////////////////////////////////
 // build a map of words to ignore given the path of the executable
-// which is used to locate the Words.TXT file
-bool BuildIgnoreWords( CString csPath, CKeyedCollection< CString, int >& words )
+// which is used to locate the Dictionary.txt file
+bool ReadDictionary( CString csPath, CKeyedCollection< CString, int >& words )
 {
 	bool bOK = false;
 	const CString csFolder = CHelper::GetFolder( csPath );
-	const CString csData = csFolder + _T( "words.txt" );
+	const CString csData = csFolder + _T( "Dictionary.txt" );
 	if ( !::PathFileExists( csData ) )
 	{
 		return bOK;
 	}
 
-	// open the words file and error out on failure
+	// open the dictionary file and error out on failure
 	CStdioFile file;
 	if ( !file.Open( csData, CFile::modeRead | CFile::typeText ) )
 	{
@@ -939,7 +983,7 @@ bool BuildIgnoreWords( CString csPath, CKeyedCollection< CString, int >& words )
 	bOK = words.Count > 0;
 	return bOK;
 
-} // BuildIgnoreWords
+} // ReadDictionary
 
 /////////////////////////////////////////////////////////////////////////////
 // create a collection of name suffixes
@@ -1127,7 +1171,7 @@ bool IgnoreWord( CString word )
 	csLower.MakeLower();
 
 	// ignore if the lowercase version is in the  collection
-	value = m_Ignore.Exists[ csLower ];
+	value = m_Dictionary.Exists[ csLower ];
 	if ( !value )
 	{
 		csLower.Trim( m_csEverything );
@@ -1140,7 +1184,7 @@ bool IgnoreWord( CString word )
 		// the word is in the ignore word collection
 		if ( !value )
 		{
-			value = m_Ignore.Exists[ csLower ];
+			value = m_Dictionary.Exists[ csLower ];
 		}
 	}
 
@@ -1350,17 +1394,7 @@ void AddOutputData
 		// if the output is unique, add it to the
 		// collection, otherwise increment the 
 		// count of items found
-		shared_ptr<int> pCount;
-		if ( m_TotalOutput.Exists[ csFullName ] )
-		{
-			pCount = m_TotalOutput.find( csFullName );
-			*pCount += 1;
-		}
-		else
-		{
-			pCount = shared_ptr<int>( new int( 1 ) );
-			m_TotalOutput.add( csFullName, pCount );
-		}
+		CollectOutput( csFullName );
 	}
 
 } // AddOutputData
@@ -1424,8 +1458,10 @@ void  BuildOutputString
 } // BuildOutputString
 
 /////////////////////////////////////////////////////////////////////////////
-// read the "names.txt" file
-void ReadNames( CStdioFile& file )
+// read the "names.txt" file given as the first parameter and generate
+// a concordance output, where names.txt is in the format of the normal
+// output when /C and /U parameters are not given.
+void ReadNames()
 {
 	// read a single line of text
 	CString csLine;
@@ -1433,7 +1469,7 @@ void ReadNames( CStdioFile& file )
 	{
 		// read a single line of text
 		CString csLine;
-		if ( !file.ReadString( csLine ) )
+		if ( !m_file.ReadString( csLine ) )
 		{
 			break;
 		}
@@ -1448,27 +1484,14 @@ void ReadNames( CStdioFile& file )
 		// if the output is unique, add it to the
 		// collection, otherwise increment the 
 		// count of items found
-		shared_ptr<int> pCount;
-		if ( m_TotalOutput.Exists[ csLine ] )
-		{
-			pCount = m_TotalOutput.find( csLine );
-			*pCount += 1;
-		}
-		else // add the new name
-		{
-			pCount = shared_ptr<int>
-			(
-				new int( 1 )
-			);
-			m_TotalOutput.add( csLine, pCount );
-		}
+		CollectOutput( csLine );
 	}
 	while ( true );
 } // ReadNames
 
 /////////////////////////////////////////////////////////////////////////////
 // read the words file named in the first parameter of the program
-int ReadWords( CStdioFile& file )
+int ReadWords()
 {
 	// crawl through the input file parsing the words
 	// and build a corresponding line of output for each
@@ -1477,16 +1500,27 @@ int ReadWords( CStdioFile& file )
 	vector<CString> Output;
 
 	// build a collection of words to ignore
-	if ( !BuildIgnoreWords( m_arrArgs[ 0 ], m_Ignore ) )
+	if ( !ReadDictionary( m_arrArgs[ 0 ], m_Dictionary ) )
 	{
-		return 6;
+		m_csMessage.Format
+		(
+			_T( "Failed to read the \"dictionary.txt\" file\n" )
+			_T( ".	which is located in the folder with the\n" )
+			_T( ".	with executable. This file contains words\n" )
+			_T( ".	from the English language that are not names\n" )
+			_T( ".	if they are lowercase.\n" )
+		);
+		m_fErr.WriteString( _T( ".\n" ) );
+		m_fErr.WriteString( m_csMessage );
+		m_fErr.WriteString( _T( ".\n" ) );
+		return 7;
 	}
 
 	do
 	{
 		// read a single line of text
 		CString csLine;
-		if ( !file.ReadString( csLine ) )
+		if ( !m_file.ReadString( csLine ) )
 		{
 			break;
 		}
@@ -1662,12 +1696,290 @@ int ReadWords( CStdioFile& file )
 } // ReadWords
 
 /////////////////////////////////////////////////////////////////////////////
-// a console application that can crawl through the file
-// and build a sorted list of filenames
-int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
+// read the words file named in the first parameter of the program
+// and generate a sorted output of unique uppercase words
+int ReadUppercase()
+{
+	// if the /People parameter was given
+	if ( m_bPeople )
+	{
+		// we need to load the dictionary to filter against
+		if ( !ReadDictionary( m_arrArgs[ 0 ], m_Dictionary ) )
+		{
+			m_csMessage.Format
+			(
+				_T( "Failed to read the \"dictionary.txt\" file\n" )
+				_T( ".	which is located in the folder with the\n" )
+				_T( ".	with executable. This file contains words\n" )
+				_T( ".	from the English language that are not names\n" )
+				_T( ".	if they are lowercase.\n" )
+			);
+			m_fErr.WriteString( _T( ".\n" ) );
+			m_fErr.WriteString( m_csMessage );
+			m_fErr.WriteString( _T( ".\n" ) );
+			return 7;
+		}
+		else
+		{
+			m_csMessage.Format
+			(
+				_T( "The \"dictionary.txt\" file contains:\n" )
+				_T( ".	%d words.\n" ), m_Dictionary.Count
+			);
+			m_fErr.WriteString( _T( ".\n" ) );
+			m_fErr.WriteString( m_csMessage );
+			m_fErr.WriteString( _T( ".\n" ) );
+		}
+	}
+
+	do
+	{
+		// read a line of text from the words.txt file
+		CString csLine;
+		if ( !m_file.ReadString( csLine ) )
+		{
+			break;
+		}
+
+		// trim non-text from both ends
+		csLine.Trim( m_csEverything + _T( " 0123456789" ));
+
+		// ignore empty lines
+		if ( csLine.IsEmpty() )
+		{
+			continue;
+		}
+
+		// strip off plural suffix
+		HandlePlural( csLine );
+
+		// leading character of the input
+		const TCHAR cFirst = csLine[ 0 ];
+
+		// test for uppercase
+		const bool bUpper = cFirst >= 'A' && cFirst <= 'Z';
+
+		// if the word is not uppercase, continue the loop
+		if ( !bUpper )
+		{
+			continue;
+		}
+
+		// if the m_bPeople flag is true, test the word
+		// to see if it's lowercase version is in the 
+		// dictionary and if so, do not add to the output.
+		if ( m_bPeople )
+		{
+			CString csLower = csLine;
+			csLower.MakeLower();
+			const bool bExists = m_Dictionary.Exists[ csLower ];
+
+			// if the lowercase version of the word exists, 
+			// do not collect the output by continuing the
+			// loop.
+			if ( bExists )
+			{
+				CollectIgnoredWords( csLine );
+				continue;
+			}
+		}
+
+		// if the output is unique, add it to the
+		// collection, otherwise increment the 
+		// count of items found
+		CollectOutput( csLine );
+	}
+	while ( true );
+
+	// write a message to the console of words that 
+	// are ignored. There are cases where an ignored
+	// word can also be a name, such as Larry Bird
+	// where bird is a word and a name. This text
+	// cannot be redirected because it is an error.
+	for ( auto& node : m_Ignore.Items )
+	{
+		m_csMessage.Format( _T( "%s was ignored.\n" ), node.first );
+		m_fErr.WriteString( m_csMessage );
+	}
+
+	return 0;
+} // ReadUppercase
+
+/////////////////////////////////////////////////////////////////////////////
+// read the words file named in the first parameter of the program
+// and generate a sorted output of unique lowercase words
+int ReadLowercase()
+{
+	// line of text to be read
+	CString csLine;
+
+	// if /Dictionary parameter was given
+	if ( m_bDictionary )
+	{
+		// initialize the output with the current dictionary so that the 
+		// results of reading lowercase words will be merged with 
+		// the original dictionary words.
+		if ( !ReadDictionary( m_arrArgs[ 0 ], m_TotalOutput ) )
+		{
+			m_csMessage.Format
+			(
+				_T( "Failed to read the \"dictionary.txt\" file\n" )
+				_T( ".	which is located in the folder with the\n" )
+				_T( ".	with executable. This file contains words\n" )
+				_T( ".	from the English language that are not names\n" )
+				_T( ".	if they are lowercase.\n" )
+			);
+			m_fErr.WriteString( _T( ".\n" ) );
+			m_fErr.WriteString( m_csMessage );
+			m_fErr.WriteString( _T( ".\n" ) );
+			return 7;
+		}
+		else
+		{
+			m_csMessage.Format
+			(
+				_T( "The initial \"dictionary.txt\" file contains:\n" )
+				_T( ".	%d words.\n" ), m_TotalOutput.Count
+			);
+			m_fErr.WriteString( _T( ".\n" ) );
+			m_fErr.WriteString( m_csMessage );
+			m_fErr.WriteString( _T( ".\n" ) );
+		}
+	}
+
+	do
+	{
+		// read a line of text from the input file
+		if ( !m_file.ReadString( csLine ) )
+		{
+			break;
+		}
+
+		// trim non-text from both ends
+		csLine.Trim( m_csEverything + _T( " 0123456789" ));
+
+		// ignore empty lines
+		if ( csLine.IsEmpty() )
+		{
+			continue;
+		}
+
+		// strip off plural suffix
+		HandlePlural( csLine );
+
+		// leading character of the input
+		const TCHAR cFirst = csLine[ 0 ];
+
+		// test for lowercase
+		const bool bUpper = cFirst >= 'a' && cFirst <= 'z';
+
+		if ( !bUpper )
+		{
+			continue;
+		}
+
+		// if the output is unique, add it to the
+		// collection, otherwise increment the 
+		// count of items found
+		CollectOutput( csLine );
+	}
+	while ( true );
+
+	return 0;
+} // ReadLowercase
+
+/////////////////////////////////////////////////////////////////////////////
+// provide the user information on how to use the application
+void Usage()
+{
+	m_fErr.WriteString( _T( ".\n" ) );
+	m_fErr.WriteString
+	(
+		_T( "CapitalWords, Copyright (c) 2022, " )
+		_T( "by W. T. Block.\n" )
+	);
+
+	m_fErr.WriteString
+	(
+		_T( ".\n" )
+		_T( "A Windows command line program to read a text\n" )
+		_T( "  file of lines containing single words and \n" )
+		_T( "  output a text file of the words\n" )
+		_T( "  beginning with a capital letter.\n" )
+		_T( ".\n" )
+		_T( "The input text file is in this format:\n" )
+		_T( "  single_word\n" )
+		_T( ".\n" )
+	);
+
+	m_fErr.WriteString
+	(
+		_T( ".\n" )
+		_T( "Usage:\n" )
+		_T( ".\n" )
+		_T( ".  CapitalWords input_file [ /C | /U | /P | /L | /D ]\n" )
+		_T( ".\n" )
+		_T( "Where:\n" )
+		_T( ".  Items enclosed in square brackets ([]) are optional.\n" )
+		_T( ".  The pipe symbol (|) indicates logical \"or\" such that\n" )
+		_T( ".	  only one of the items can be used.\n" )
+		_T( ".\n" )
+		_T( ".  input_file is the pathname of the input file.\n" )
+		_T( ".\n" )
+		_T( ".  /C[oncordance] - is optional.\n" )
+		_T( ".    yields two columns separated by tilde (~)\n" )
+		_T( ".    which can be pasted into a Word document\n" )
+		_T( ".    to create a concordance table for importing\n" )
+		_T( ".    index markings into another Word document:\n" )
+		_T( ".      \"original_name~last_name, first_name middle_name\n" )
+		_T( ".    where original_name is the text from the input\n" )
+		_T( ".    and last_name, first_name middle name is the text\n" )
+		_T( ".    to be displayed in the index.\n" )
+		_T( ".\n" )
+		_T( ".  /U[ppercase] - is optional.\n" )
+		_T( ".    yields an output of uppercase words from the input file.\n" )
+		_T( ".\n" )
+		_T( ".  /P[eople] - is optional.\n" )
+		_T( ".    yields an output of uppercase words from the input file\n" )
+		_T( ".    when the lowercase version of the word is not in the.\n" )
+		_T( ".    \"Dictionary.txt\" file. The idea is an uppercase word\n" )
+		_T( ".    not in the dictionary is a proper name, but the reality\n" )
+		_T( ".    is, there are other names like cities can result in errors.\n" )
+		_T( ".\n" )
+		_T( ".  /L[owercase] - is optional.\n" )
+		_T( ".    yields an output of lowercase words from the input file.\n" )
+		_T( ".\n" )
+		_T( ".  /D[ictionary] - is optional.\n" )
+		_T( ".    yields an output of lowercase words from the input file\n" )
+		_T( ".    merged with the original dictionary words. This provides\n" )
+		_T( ".    a means of updating the dictionary by replacing the .\n" )
+		_T( ".    \"Dictionary.txt\" file with this output.\n" )
+		_T( ".\n" )
+		_T( "NOTE: a special case is where the input_file is \"names.txt\" which\n" )
+		_T( ".  is in the format of the standard output when concordance is\n" )
+		_T( ".  set to false. In this case, the program will output a concordance\n" )
+		_T( ".  table using the names.txt file as its input. \n" )
+		_T( ".\n" )
+	);
+} // Usage
+
+/////////////////////////////////////////////////////////////////////////////
+int Initialize( int argc, TCHAR* argv[] )
 {
 	// by default, a concordance table is not output
 	m_bConcordance = false;
+
+	// by default, an uppercase file is not output
+	m_bUppercase = false;
+
+	// by default, the people file is not output
+	m_bPeople = false;
+
+	// by default, a lowercase file is not output
+	m_bLowercase = false;
+
+	// by default, a dictionary file is not output
+	m_bDictionary = false;
 
 	// if the input file is called "names.txt", then it is assumed to be the 
 	// output of this program when m_bConcordance is false, 
@@ -1691,34 +2003,23 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 
 	// do some common command line argument corrections
 	m_arrArgs = CHelper::CorrectedCommandLine( argc, argv );
-	const size_t nArgs = m_arrArgs.size();
-
-	// this stream can be redirected from the command line to allow the 
-	// output you are interested in to be captured into another file
-	// (Ex. > out_file.csv)
-	CStdioFile fOut( stdout );
-
-	// this stream is not redirected; it only shows up on the console and
-	// will not affect the output file that is being redirected to
-	CStdioFile fErr( stderr );
-
-	CString csMessage;
+	m_nArgs = m_arrArgs.size();
 
 	// display the number of arguments if not 1 or 2 to help the user 
 	// understand what went wrong if there is an error in the
 	// command line syntax
 	bool bUsage = false;
-	if ( nArgs == 2 || nArgs == 3 )
+	if ( m_nArgs == 2 || m_nArgs == 3 )
 	{
-		fErr.WriteString( _T( ".\n" ) );
-		csMessage.Format( _T( "The number of parameters are %d\n.\n" ), nArgs - 1 );
-		fErr.WriteString( csMessage );
+		m_fErr.WriteString( _T( ".\n" ) );
+		m_csMessage.Format( _T( "The number of parameters are %d\n.\n" ), m_nArgs - 1 );
+		m_fErr.WriteString( m_csMessage );
 
 		// display the arguments
-		for ( size_t i = 1; i < nArgs; i++ )
+		for ( size_t i = 1; i < m_nArgs; i++ )
 		{
-			csMessage.Format( _T( "Parameter %d is %s\n.\n" ), i, m_arrArgs[ i ] );
-			fErr.WriteString( csMessage );
+			m_csMessage.Format( _T( "Parameter %d is %s\n.\n" ), i, m_arrArgs[ i ] );
+			m_fErr.WriteString( m_csMessage );
 		}
 	}
 	else // give the user some usage information
@@ -1729,76 +2030,87 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 	// two arguments expected
 	if ( bUsage )
 	{
-		fErr.WriteString( _T( ".\n" ) );
-		fErr.WriteString
-		(
-			_T( "CapitalWords, Copyright (c) 2022, " )
-			_T( "by W. T. Block.\n" )
-		);
-
-		fErr.WriteString
-		(
-			_T( ".\n" )
-			_T( "A Windows command line program to read a text\n" )
-			_T( "  file of lines containing single words and \n" )
-			_T( "  output a text file of the words\n" )
-			_T( "  beginning with a capital letter.\n" )
-			_T( ".\n" )
-			_T( "The input text file is in this format:\n" )
-			_T( "  single_word\n" )
-			_T( ".\n" )
-		);
-
-		fErr.WriteString
-		(
-			_T( ".\n" )
-			_T( "Usage:\n" )
-			_T( ".\n" )
-			_T( ".  CapitalWords input_file [concordance]\n" )
-			_T( ".\n" )
-			_T( "Where:\n" )
-			_T( ".\n" )
-			_T( ".  input_file is the pathname of the input file.\n" )
-			_T( ".  concordance is optional true/false (default).\n" )
-			_T( ".		to determine the type of output:\n" )
-			_T( ".			false - (default) yields a single column of names\n" )
-			_T( ".			true  - yields two columns separated by tilde (~)\n" )
-			_T( ".					which can be pasted into a Word document\n" )
-			_T( ".					to create a concordance table for importing\n" )
-			_T( ".					index markings into another Word document:\n" )
-			_T( ".						\"original_name~last_name, first_name\n" )
-			_T( ".					where original_name is the text from the input\n" )
-			_T( ".					and last_name, first_name is the text in the index.\n" )
-			_T( ".\n" )
-			_T( "NOTE: a special case is where the input_file is \"names.txt\" which\n" )
-			_T( ".	is in the format of the standard output when concordance is\n" )
-			_T( ".	set to false. In this case, the program will output a concordance\n" )
-			_T( ".	table using the names.txt file as its input. \n" )
-			_T( ".\n" )
-		);
-
+		Usage();
 		return 3;
 	}
 
 	// display the executable path
-	csMessage.Format( _T( "Executable pathname: %s\n" ), m_arrArgs[ 0 ] );
-	fErr.WriteString( _T( ".\n" ) );
-	fErr.WriteString( csMessage );
-	fErr.WriteString( _T( ".\n" ) );
+	m_csMessage.Format( _T( "Executable pathname: %s\n" ), m_arrArgs[ 0 ] );
+	m_fErr.WriteString( _T( ".\n" ) );
+	m_fErr.WriteString( m_csMessage );
+	m_fErr.WriteString( _T( ".\n" ) );
 
 	// retrieve the pathname
 	const CString csInput = m_arrArgs[ 1 ];
 
 	// test to see if there is an optional parameter to control the type
-	// of output and if "true" mark the output type to be concordance
-	CString csConcordance = _T( "false" );
-	if ( nArgs == 3 )
+	// of output being generated
+	if ( m_nArgs == 3 )
 	{
-		csConcordance = m_arrArgs[ 2 ];
-		csConcordance.MakeLower();
-		if ( csConcordance == _T( "true" ) )
+		CString csArg = m_arrArgs[ 2 ];
+		csArg.MakeUpper();
+
+		// a "/Concordance" parameter will automatically output
+		// a concordance file: "name_in_file~last, first middle"
+		if ( csArg.Left( 2 ) == _T( "/C" ) )
 		{
 			m_bConcordance = true;
+			m_csMessage.Format( _T( "Generating a concordance output.\n" ));
+			m_fErr.WriteString( _T( ".\n" ) );
+			m_fErr.WriteString( m_csMessage );
+			m_fErr.WriteString( _T( ".\n" ) );
+		}
+		// an "/Uppercase" parameter will automatically output
+		// all of the uppercase words found in the input file
+		else if ( csArg.Left( 2 ) == _T( "/U" ) )
+		{
+			m_bUppercase = true;
+			m_csMessage.Format( _T( "Generating an uppercase output.\n" ));
+			m_fErr.WriteString( _T( ".\n" ) );
+			m_fErr.WriteString( m_csMessage );
+			m_fErr.WriteString( _T( ".\n" ) );
+		}
+		// a "/People" parameter will automatically output
+		// all of the uppercase words found in the input file
+		// but the lowercase version of that word does not exist
+		// in the dictionary.
+		else if ( csArg.Left( 2 ) == _T( "/P" ) )
+		{
+			m_bPeople = true;
+			m_csMessage.Format( _T( "Generating a people output.\n" ));
+			m_fErr.WriteString( _T( ".\n" ) );
+			m_fErr.WriteString( m_csMessage );
+			m_fErr.WriteString( _T( ".\n" ) );
+		}
+		// a "/Lowercase" parameter will automatically output
+		// all of the lowercase words found in the input file
+		else if ( csArg.Left( 2 ) == _T( "/L" ) )
+		{
+			m_bLowercase = true;
+			m_csMessage.Format( _T( "Generating a lowercase output.\n" ));
+			m_fErr.WriteString( _T( ".\n" ) );
+			m_fErr.WriteString( m_csMessage );
+			m_fErr.WriteString( _T( ".\n" ) );
+		}
+		// a "/Dictionary" parameter will automatically output
+		// all of the lowercase words found in the input file
+		// merged with the dictionary
+		else if ( csArg.Left( 2 ) == _T( "/D" ) )
+		{
+			m_bDictionary = true;
+			m_csMessage.Format( _T( "Generating a dictionary output.\n" ));
+			m_fErr.WriteString( _T( ".\n" ) );
+			m_fErr.WriteString( m_csMessage );
+			m_fErr.WriteString( _T( ".\n" ) );
+		}
+		// an unknown parameter will generate a failure message
+		else
+		{
+			m_csMessage.Format( _T( "Unknown parameter: %s\n" ), csArg );
+			m_fErr.WriteString( _T( ".\n" ) );
+			m_fErr.WriteString( m_csMessage );
+			m_fErr.WriteString( _T( ".\n" ) );
+			return 4;
 		}
 	}
 
@@ -1812,29 +2124,28 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 	// error out if the file does not exist
 	if ( !bExists )
 	{
-		csMessage.Format( _T( "Invalid input file:\n\t%s\n" ), csInput );
-		fErr.WriteString( _T( ".\n" ) );
-		fErr.WriteString( csMessage );
-		fErr.WriteString( _T( ".\n" ) );
-		return 4;
+		m_csMessage.Format( _T( "Invalid input file:\n\t%s\n" ), csInput );
+		m_fErr.WriteString( _T( ".\n" ) );
+		m_fErr.WriteString( m_csMessage );
+		m_fErr.WriteString( _T( ".\n" ) );
+		return 5;
 
 	}
 	else // display the name of the file input
 	{
-		csMessage.Format( _T( "Given input:\n\t%s\n" ), csInput );
-		fErr.WriteString( _T( ".\n" ) );
-		fErr.WriteString( csMessage );
+		m_csMessage.Format( _T( "Given input:\n\t%s\n" ), csInput );
+		m_fErr.WriteString( _T( ".\n" ) );
+		m_fErr.WriteString( m_csMessage );
 	}
 
 	// open the file and error out on failure
-	CStdioFile file;
-	if ( !file.Open( csInput, CFile::modeRead | CFile::typeText ) )
+	if ( !m_file.Open( csInput, CFile::modeRead | CFile::typeText ) )
 	{
-		csMessage.Format( _T( "Invalid input file:\n\t%s\n" ), csInput );
-		fErr.WriteString( _T( ".\n" ) );
-		fErr.WriteString( csMessage );
-		fErr.WriteString( _T( ".\n" ) );
-		return 5;
+		m_csMessage.Format( _T( "Invalid input file:\n\t%s\n" ), csInput );
+		m_fErr.WriteString( _T( ".\n" ) );
+		m_fErr.WriteString( m_csMessage );
+		m_fErr.WriteString( _T( ".\n" ) );
+		return 6;
 	}
 
 	// special case of the input file being named "names.txt" which will
@@ -1852,8 +2163,46 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 	// create a collection of name titles (prefixes)
 	BuildTitleData();
 
+	return 0;
+} // Initialize
+
+/////////////////////////////////////////////////////////////////////////////
+// output to the console the unique lines of data we found
+void WriteTotalOutput()
+{
+	for ( auto& node : m_TotalOutput.Items )
+	{
+		const CString csToken = node.first;
+
+		// default to outputting the token that was originally stored
+		CString csOut = csToken;
+
+		// add right column of concordance table if the user
+		// added the second parameter of "/Concordance"
+		if ( m_bConcordance == true )
+		{
+			csOut = BuildConcordance( csToken );
+		}
+
+		// write the output line to the console (which
+		// can be redirected to another text file)
+		m_fOut.WriteString( csOut + _T( "\n" ) );
+	}
+} // WriteTotalOutput
+
+/////////////////////////////////////////////////////////////////////////////
+// a console application that can crawl through the file
+// and build a sorted list of filenames
+int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
+{
+	int nReturn = Initialize( argc, argv );
+	if ( nReturn != 0 )
+	{
+		return nReturn;
+	}
+
 	// building concordance file directly?
-	if ( m_bNames == true )
+	if ( m_bNames )
 	{
 		// read names reads the "names.txt" file that contains
 		// the output of this program when the concordance
@@ -1863,49 +2212,47 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 		//		first_name [middle name]... last_name
 		// where there is expected to be a minimum of two words
 		// for the first and last names
-		ReadNames( file );
+		ReadNames();
 	} 
-	else 
+	// looking for upper case word. If m_bPeople is true, the
+	// uppercase words are filtered out it their lowercase
+	// version is in the dictionary (trying to find proper
+	// names).
+	else if ( m_bUppercase || m_bPeople )
+	{
+		nReturn = ReadUppercase();
+		if ( nReturn != 0 )
+		{
+			return nReturn;
+		}
+	}
+	// generating lowercase output from the input file, but
+	// if m_bDictionary is true, the output begins with the
+	// current "Dictionary.txt" file contents (allowing the
+	// dictionary to grow when run against additional 
+	// word files.
+	else if ( m_bLowercase || m_bDictionary )
+	{
+		nReturn = ReadLowercase();
+		if ( nReturn != 0 )
+		{
+			return nReturn;
+		}
+	}
+	else
 	// reading the normal input file containing words from 
 	// the target Microsoft Word file to be indexed
 	{
-		int nReturn = ReadWords( file );
+		nReturn = ReadWords();
 		if ( nReturn != 0 )
 		{
-			csMessage.Format
-			( 
-				_T( "Failed to read the \"words.txt\" file\n" )
-				_T( ".	which is located in the folder with the\n" )
-				_T( ".	with executable. This file contains words\n" )
-				_T( ".	from the English language that are not names\n" )
-				_T( ".	if they are lowercase.\n" )
-			);
-			fErr.WriteString( _T( ".\n" ) );
-			fErr.WriteString( csMessage );
-			fErr.WriteString( _T( ".\n" ) );
 			return nReturn;
 		}
 	}
 	
-	// output to the console the unique line we found
-	for ( auto& node : m_TotalOutput.Items )
-	{
-		const CString csToken = node.first;
-
-		// default to outputting the token that was originally stored
-		CString csOut = csToken;
-
-		// add right column of concordance table if the user
-		// added the second parameter of "true"
-		if ( m_bConcordance == true )
-		{
-			csOut = BuildConcordance( csToken );
-		}
-
-		// write the output line to the console (which
-		// can be redirected to another text file)
-		fOut.WriteString( csOut + _T( "\n" ));
-	}
+	// output to the console the sorted and unique lines of 
+	// text we found
+	WriteTotalOutput();
 
 	// all is good
 	return 0;
