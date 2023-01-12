@@ -5,6 +5,7 @@ abandoned
 abbeville
 abbreviated
 abcs
+aberdeen
 abhorred
 abiding
 abilities
@@ -91,6 +92,8 @@ across
 act
 acting
 action
+action
+jan
 active
 actively
 activities
@@ -164,7 +167,7 @@ affairs
 affect
 affected
 affection
-affection.-Marie
+affection.-marie
 affectionately
 affiliate
 affiliated
@@ -179,6 +182,9 @@ afore-named
 aforementioned
 afraid
 africa
+african
+afrikaans
+afrikaansche
 after
 aftermath
 afternoon
@@ -317,6 +323,7 @@ anew
 angered
 angled
 angler
+angleton
 anglicized
 angterp
 angular
@@ -346,10 +353,10 @@ antebellum
 antecedents
 anthem
 anthrax
-anti-Catholic
-anti-Jewish
-anti-Negro
 anti-aircraft
+anti-catholic
+anti-jewish
+anti-negro
 anticipated
 antiquated
 antique
@@ -415,7 +422,6 @@ appropriated
 approve
 approved
 approximately
-april
 april-may
 aptitude
 arcades
@@ -429,7 +435,7 @@ archives
 ardennes
 are
 area
-area-W
+area-w
 areas
 aren't
 arise
@@ -572,7 +578,6 @@ auditorium
 august
 aunt
 aunts
-aurora
 auspices
 austria
 austrian
@@ -691,6 +696,7 @@ baptismal
 baptisms
 baptist
 baptistry
+baptists
 baptize
 baptized
 baptizing
@@ -776,7 +782,6 @@ beams
 bean
 beans
 bear
-beard
 bearing
 bears
 beast
@@ -829,6 +834,7 @@ behold
 being
 beings
 belcher
+belgian
 belgium
 belief
 beliefs
@@ -837,7 +843,6 @@ believe
 believed
 believes
 believing
-bell
 bell-like
 bellowed
 bells
@@ -871,6 +876,7 @@ best-known
 bested
 bestowed
 bet
+bet-a-million
 better
 betterment
 betting
@@ -893,7 +899,6 @@ biggest
 bike
 bikini
 bilingual
-bill
 billboard
 billiard
 billiards
@@ -923,7 +928,6 @@ bites
 biting
 bitter
 bitterly
-black
 black-eyed
 black-topping
 blackberries
@@ -954,7 +958,6 @@ blink
 bliss
 blizzard
 blizzards
-block
 blockade
 blocked
 blocking
@@ -979,6 +982,7 @@ bluebonnets
 bluejean
 blueprints
 bluff
+bo
 boa
 board
 boarded
@@ -1049,6 +1053,7 @@ borrowing
 boss
 bossed
 boston
+boston}}
 both
 bottle
 bottled
@@ -1165,10 +1170,10 @@ brother
 brother-in-law
 brothers
 brothers-in-law
+brothers�
 brothers…
 brought
 broward
-brown
 brown-and-white
 bruised
 bruises
@@ -1257,9 +1262,11 @@ buster
 busy
 busybody
 but
+butane
 butcher
 butchered
 butchering
+butler-redd
 butt
 butter
 butter-split
@@ -1275,6 +1282,7 @@ by
 by-laws
 bystander
 c
+c-
 ca
 cabin
 cabinet
@@ -1344,7 +1352,6 @@ cans
 cantaloupes
 canvas
 canyons
-can’t
 cap
 capability
 capable
@@ -1468,6 +1475,7 @@ celebrating
 celebration
 celebrations
 celebrities
+celeste's}
 cement
 cement-making
 cemented
@@ -1662,7 +1670,8 @@ citizens
 citizenship
 city
 city-owned
-city¬wide
+citywide
+city�wide
 civic
 civic-minded
 civil
@@ -1679,7 +1688,6 @@ classmates
 classroom
 classrooms
 claus
-clay
 clean
 cleaned
 cleaning
@@ -1781,6 +1789,7 @@ collector
 college
 college-trained
 colleges
+collinsville
 colon
 colonel
 colonial
@@ -1796,7 +1805,6 @@ colored
 coloring
 columbarium
 columbia
-columbus
 columns
 com
 combat
@@ -1894,6 +1902,7 @@ compulsory
 computer
 computerized
 comstock
+con
 con-celebrants
 concentrated
 concept
@@ -1962,6 +1971,7 @@ connection
 connects
 consecutive
 consent
+consequently
 conservative
 consider
 considerable
@@ -2059,7 +2069,6 @@ convinced
 convoy
 convoys
 coo-o-o-l
-cook
 cookbook
 cookbooks
 cooked
@@ -2118,7 +2127,6 @@ cottonclad
 cough
 could
 couldn't
-couldn’t
 council
 councilman
 councilmen
@@ -2312,8 +2320,6 @@ dairy
 dairying
 dairyman
 dairymen
-dakota
-dale
 dallas
 damage
 damaged
@@ -2361,7 +2367,6 @@ days
 daytime
 dayton
 de
-deJong
 deacon
 deacons
 dead
@@ -2373,7 +2378,6 @@ deal
 dealer
 dealership
 dealt
-dean
 dear
 dearly
 death
@@ -2441,6 +2445,7 @@ degree
 degree)-what
 degrees
 deign
+dejong
 delay
 delayed
 delegation
@@ -2548,6 +2553,7 @@ developing
 development
 device
 devices
+devil
 devilment
 devote
 devoted
@@ -2566,7 +2572,6 @@ diamonds
 dickens
 did
 didn't
-didn’t
 die
 died
 dietician
@@ -2612,7 +2617,6 @@ directors
 directorship
 directory
 directory}}
-dirk
 dirt
 dirtiest
 dirty
@@ -2768,7 +2772,6 @@ donations
 done
 donned
 donors
-don’t
 door
 door-to-door
 doors
@@ -2803,6 +2806,7 @@ dozen
 dozens
 dr
 dr./m
+dracula
 draft
 drafted
 drafting
@@ -2885,6 +2889,7 @@ drums
 drunk
 drunken
 drunkenness
+drunks
 dry
 dry-cleaning
 duck
@@ -2908,7 +2913,7 @@ during
 dusk
 dust
 dusting
-dutch
+dutch-language
 dutchman
 dutchmen
 duties
@@ -3119,6 +3124,7 @@ england
 english
 english-language
 english-speaking
+engraving
 enhance
 enjoy
 enjoyable
@@ -3207,10 +3213,10 @@ erecting
 erection
 erroneous
 error
-error-Smiths
 error-author
 error-cancer
 error-should
+error-smiths
 error-the
 errs
 erstwhile
@@ -3372,6 +3378,7 @@ exploratory
 explored
 explosion
 exponent
+exporter
 exposed
 exposure
 express
@@ -3505,6 +3512,7 @@ feather
 feature
 featuring
 feb
+feb.6,1905
 february
 fed
 federal
@@ -3519,9 +3527,11 @@ feeling
 feet
 fell
 fellow
+fellows
 fellowship
 fellowships
 felt
+fem
 female
 fence
 fenced
@@ -3542,8 +3552,10 @@ feud
 fever
 few
 fewer
-fiancé
-fiancées
+fianc�
+fianc�es
+fianc�
+fianc�es
 fiddle
 fiddles
 field
@@ -3683,6 +3695,7 @@ floods
 floor
 flooring
 floors
+florida
 florist
 flounce
 flour
@@ -3741,7 +3754,6 @@ forbidding
 force
 forced
 forcing
-ford
 fore
 forebears
 foreclosed
@@ -3793,7 +3805,6 @@ forty-two
 forward
 forwarded
 forwarding
-foster
 fought
 found
 foundation
@@ -3826,8 +3837,11 @@ framed
 frames
 france
 franchise
+francisco
 franco-prussian
+frankfurt
 frankfurt/main
+frantically
 fraternal
 fraternity
 free
@@ -3838,6 +3852,7 @@ freezer
 freezes
 freezing
 freight
+french
 frequent
 frequently
 fresh
@@ -3847,6 +3862,8 @@ freshly-killed
 freshly-slaughtered
 freshman
 freshwater
+friday
+fridays
 fried
 friend
 friendliest
@@ -3854,7 +3871,9 @@ friendly
 friends
 friendship
 friendships
+friendswood
 fries
+friesland
 fright
 frightened
 frigid
@@ -3872,7 +3891,6 @@ frontier
 frontiersmen
 fronting
 fronts
-frost
 froze
 frozen
 frs
@@ -4000,7 +4018,9 @@ geographical
 geography
 geologist
 geophysical
+germaine
 german
+german-lloyd
 germanization
 germany
 germs
@@ -4078,7 +4098,6 @@ governors
 gown
 gpa
 grabbed
-grace
 gracious
 graciously
 grade
@@ -4144,7 +4163,6 @@ greater
 greatest
 greatly
 greed
-green
 greener
 greenhouses
 greens
@@ -4173,7 +4191,6 @@ grounds
 groundwork
 group
 groups
-groves
 grow
 grower
 growers
@@ -4216,7 +4233,6 @@ gut
 gutted
 gutter
 gutters
-guy
 gym-style
 gymnasium
 gypsum
@@ -4230,7 +4246,6 @@ hacking
 hacks
 had
 hadn't
-hadn’t
 hailstorm
 hair
 haircuts
@@ -4251,7 +4266,6 @@ half-owner
 half-sister
 half-sisters
 half-way
-hall
 hallmark
 hallways
 halter
@@ -4333,7 +4347,7 @@ harvested
 harvesting
 harvests
 has
-hasn’t
+hasn't
 hastened
 hat
 hated
@@ -4348,6 +4362,7 @@ having
 hawaii
 hay
 hay-baling
+hay-making
 hayrides
 haystack
 hazards
@@ -4410,6 +4425,7 @@ helpers
 helping
 helpless
 hemmed
+hemphill
 hen
 hence
 henhouse
@@ -4428,8 +4444,6 @@ hers
 herself
 hesitant
 heydays
-he’d
-he’ll
 hi
 hibiscus
 hid
@@ -4499,6 +4513,7 @@ holes
 holidays
 holland
 holland-america
+hollanders
 hollered
 hollow
 holstein
@@ -4561,6 +4576,7 @@ horticulturist
 hose
 hosing
 hospital
+hospital-burns
 hospitality
 hospitalized
 hospitals
@@ -4641,8 +4657,14 @@ hygienist
 hymns
 hypothetical
 i
+i'd
+i'll
+i'm
+i've
 i-v
 i.e
+i845
+iberia
 ibid
 ibm
 ice
@@ -4651,6 +4673,7 @@ ice-skated
 icehouse
 icy
 id
+idaho
 idea
 ideal
 ideco
@@ -4764,9 +4787,11 @@ indeed
 indelibly
 indenture
 indentured
+independence
 independent
 index
 india
+indian
 indiana
 indians
 indicate
@@ -4969,6 +4994,7 @@ io
 iota
 iowa
 ire
+ireland
 irish
 iron
 iron-wheeled
@@ -5008,7 +5034,6 @@ ix
 i�d
 j
 jacinto
-jack
 jacks
 jacksboro
 jacksonville
@@ -5018,8 +5043,8 @@ january
 japanese
 jargon
 jars
-jasper
 jaunt
+jaycee
 jaycees
 jazz
 jelly
@@ -5058,6 +5083,7 @@ joy
 joyful
 joys
 jr
+jr.
 jubilee
 judge
 judges
@@ -5117,20 +5143,20 @@ kiln
 kin
 kind
 kinda
+kinder
 kindergarten
+kindly
 kindness
 kindred
 kinds
 kinfolk
 kinfolks
-king
 kingdom
 kingpin
 kingston
 kinship
-kirby
+kirbyville
 kiss
-kitchen
 kite
 kites
 kits
@@ -5150,12 +5176,13 @@ knitting
 knocked
 knot
 know
-know-Tve
+know-tve
 knowing
 knowledge
 knowledgeable
 known
 knows
+ko
 kodak
 ku
 l
@@ -5186,6 +5213,7 @@ laid
 lain
 laity
 lake
+lakeshore
 laminated
 lamp
 lamp-light
@@ -5281,6 +5309,7 @@ lecturer
 led
 ledger
 ledges
+leesville
 left
 leftovers
 leg
@@ -5377,6 +5406,7 @@ ling
 lingering
 link
 lion
+lionism
 lions
 lips
 liquid
@@ -5390,6 +5420,7 @@ listen
 listened
 lists
 lit
+litchfield
 literally
 literary
 literature
@@ -5400,6 +5431,7 @@ lived
 livelihood
 lively
 liver
+liverpool
 livery
 lives
 livestock
@@ -5408,6 +5440,7 @@ living
 livings
 livingston
 ll
+lnva
 lo
 load
 loaded
@@ -5425,7 +5458,7 @@ locality
 locally
 locate
 located
-located-W
+located-w
 location
 locations
 lock
@@ -5470,6 +5503,7 @@ looting
 lope
 lor
 lord
+los
 lose
 loser
 losing
@@ -5487,7 +5521,7 @@ lounge
 lousy
 love
 loved
-loved-I
+loved-i
 lovely
 lover
 lovers
@@ -5526,6 +5560,7 @@ lynch
 lyrics
 m
 m/m
+ma'am
 machine
 machined
 machinery
@@ -5641,7 +5676,6 @@ marshy
 marvelous
 maryland
 mashed-o
-mason
 masonic
 masonry
 masons
@@ -5672,12 +5706,12 @@ matters
 matured
 maturity
 mauls
-may
 maybe
 mayor
 mayors
 mazurkas
-ma’am
+mb
+mcfaddin-wiess-kyle
 md
 me
 meager
@@ -5760,6 +5794,7 @@ methane
 method
 methodism
 methodist
+methodists
 methods
 metropolitan
 mettle
@@ -5769,19 +5804,20 @@ mexico
 michigan
 microfilm
 microphone
+mid
 mid-
 mid-1920s
 mid-1930s
 mid-1940s
 mid-1980s
-mid-August
-mid-Jefferson
-mid-June
 mid-November
+mid-august
 mid-central
 mid-county
 mid-jefferson
+mid-june
 mid-morning
+mid-november
 mid-ocean
 mid-summer
 midcounty
@@ -5794,6 +5830,7 @@ midlothian
 midnight
 midstream
 midway
+midwest
 might
 migrated
 migrating
@@ -5833,6 +5870,7 @@ ministry
 minnesota
 minor
 minstrel
+minstrels
 minute
 minutes
 miracle
@@ -5847,6 +5885,7 @@ misfortune
 mishaps
 miss
 missed
+misses
 missing
 mission
 missionaries
@@ -5864,9 +5903,11 @@ mixed
 mixer
 mixing
 mob
+mobil
 moccasins
 mode
 model
+model-t
 moderate
 modern
 modernization
@@ -5987,6 +6028,8 @@ myself
 mysteries
 mythology
 n
+n/e
+nacogdoches
 nail
 nails
 naked
@@ -6004,6 +6047,7 @@ narration
 narrow
 narrower
 nasal
+nashville
 nasturtiums
 nation
 national
@@ -6046,16 +6090,22 @@ nechland
 neck
 necklace
 necks
+necrology
 nederland
 nederland-married
+nederlander
+nederlanders
 nederlandsch
+nederlandsche
 nee
 need
 needed
 needing
 needles
+needless
 needlework
 needs
+needville
 needy
 neerlandia
 negative
@@ -6132,7 +6182,7 @@ noise
 noises
 nol-prossed
 nominating
-non-Catholic
+non-catholic
 non-existent
 non-fraternization
 none
@@ -6147,6 +6197,7 @@ norther
 northern
 northex
 northwest
+northwestern
 nos
 nose
 not
@@ -6236,6 +6287,7 @@ occurring
 occurs
 ocean
 ocean-going
+oct
 october
 odd
 odor
@@ -6266,6 +6318,7 @@ oil
 oilers
 oilier
 oils
+ok
 oklahoma
 old
 old-abandoned
@@ -6323,6 +6376,7 @@ optimistic
 option
 options
 or
+oral
 orange
 oranges
 oratorical
@@ -6336,6 +6390,7 @@ ordering
 orders
 ordinarily
 ordination
+oregon
 organ
 organist
 organists
@@ -6371,9 +6426,9 @@ our
 ours
 ourselves
 out
-out-Vaticaned
 out-of-state
 out-of-town
+out-vaticaned
 outbreak
 outbuilding
 outbuildings
@@ -6434,7 +6489,6 @@ owning
 owns
 oxen
 oyster
-o’clock
 p
 p.-
 pace
@@ -6504,6 +6558,7 @@ parent-teacher
 parent-teachers
 parentage
 parents
+parents-in
 parents-in-
 paris
 parish
@@ -6616,6 +6671,7 @@ peanut
 peanuts
 pear
 pearl-handled
+pearland
 pears
 peas
 peasantry
@@ -6627,6 +6683,7 @@ peculiarly
 peddle-pumped
 peddled
 peddler
+peek
 peeked
 peeking
 peeping
@@ -6637,6 +6694,7 @@ pelican
 pen
 penchant
 pencil
+penned
 penned-
 penniless
 pennsylvania
@@ -6648,7 +6706,8 @@ penticost
 penzance
 people
 people-he
-people.Since
+people.117since
+people.since
 peoples
 per
 percent
@@ -6703,6 +6762,7 @@ petroleum-based
 pets
 petticoat
 petticoats
+pew
 pews
 pewter
 ph
@@ -6827,7 +6887,7 @@ planting
 plants
 plantsoons
 plaque
-plaster-of-Paris
+plaster-of-paris
 plastic-like
 plat
 plate
@@ -6956,8 +7016,8 @@ possibility
 possible
 possibly
 post
-post-World
 post-war
+post-world
 postal
 postcard
 posted
@@ -7007,7 +7067,6 @@ prayed
 prayer
 prayers
 pre-
-pre-World
 pre-cut
 pre-dawn
 pre-deceased
@@ -7015,6 +7074,7 @@ pre-history
 pre-med
 pre-nuptial
 pre-school
+pre-world
 preach
 preached
 preacher
@@ -7089,6 +7149,7 @@ primarily
 primary
 primitive
 primitiveness
+prince
 princess
 princesses
 principal
@@ -7316,7 +7377,6 @@ questionable
 questioned
 questioning
 questions
-quick
 quicker
 quickly
 quiet
@@ -7346,8 +7406,8 @@ racks
 racoon
 radiators
 radio
-radio-TV
 radio-equipped
+radio-tv
 radiologic
 radioman
 radios
@@ -7415,7 +7475,6 @@ rats
 rattlesnake
 rattlesnakes
 raw
-ray
 rcia
 rd
 re-enacted
@@ -7613,7 +7672,7 @@ remarried
 remarry
 remedies
 remember
-remember-I
+remember-i
 remembered
 remembering
 remembers
@@ -7763,6 +7822,7 @@ retarded
 retire
 retired
 retiree
+retirees
 retirement
 retires
 retiring
@@ -7791,6 +7851,7 @@ revise
 revival
 revivals
 revolting
+revolution
 revolutionary
 revolver
 reward
@@ -7802,7 +7863,6 @@ rhode
 rhythm
 ribbon
 ribbons
-rice
 rice-farmed
 rice-farming
 rice-growing
@@ -7835,11 +7895,13 @@ ringing
 ringling
 rings
 rinse
+rio
 ripe
 ripened
 rise
 risen
 rises
+rite
 rites
 rituals
 ritziest
@@ -7899,7 +7961,6 @@ rooting
 rope
 roping
 rosary
-rose
 rosedale
 roses
 rosin-filled
@@ -7968,12 +8029,17 @@ s-1940s
 s-1950s
 s-1960s
 s-early
+s6th
 sabbatical
+sabine
 sack
 sacked
 sacking
 sacks
+sacrament
 sacramental
+sacraments
+sacred
 sacrifice
 sacristy
 sad
@@ -7981,6 +8047,7 @@ saddle
 saddlebag
 saddled
 saddlery
+sadly
 safe
 safer
 safety
@@ -8026,7 +8093,6 @@ sandstone
 sandstorms
 sandwich
 sandwiches
-sandy
 sang
 sanitary
 sanitation
@@ -8223,9 +8289,12 @@ sense
 sensing
 sent
 sentimental
+sep
+sep.17,1893
 separate
 separated
 separator
+sept
 september
 septic
 sere
@@ -8321,7 +8390,6 @@ shelter
 shelves
 shepherd
 sheriff
-she’d
 shied
 shields
 shift
@@ -8643,6 +8711,7 @@ song
 songs
 sons
 sons-in-law
+soo
 soon
 sooner
 sop
@@ -8782,6 +8851,7 @@ square-riggers
 squatter
 squirrels
 sr
+sr.
 ss
 st
 stabbed
@@ -8883,7 +8953,6 @@ stepping
 steps
 stepson
 stereopticon
-sterling
 stern
 sternwheelers
 stevedoring
@@ -9379,6 +9448,7 @@ themes
 themselves
 then
 thence
+theology
 therapist
 there
 thereafter
@@ -9390,6 +9460,7 @@ thesis
 they
 they're
 they've
+they�re
 thick
 thicket
 thieves
@@ -9527,7 +9598,6 @@ token
 told
 tolerated
 toll
-tom
 tomatoes
 tomball
 tombstone
@@ -9627,7 +9697,7 @@ trains
 traits
 trammel
 tramp
-trans-Atlantic
+trans-atlantic
 transact
 transaction
 transcription
@@ -10001,7 +10071,6 @@ valuable
 value
 valued
 valueless
-van
 vans
 varied
 varieties
@@ -10184,7 +10253,6 @@ washers
 washeteria
 washing
 wasn't
-wasn’t
 waste
 wasted
 watch
@@ -10237,7 +10305,6 @@ weekday
 weekend
 weekends
 weekly
-weeks
 weevils
 weigh
 weighed
@@ -10270,12 +10337,10 @@ well-read
 well-recorded
 well-rounded
 well-to-do
-wells
 went
 were
 weren't
-weren’t
-west
+weslaco
 westemaires
 western
 westernaires
@@ -10283,15 +10348,13 @@ westlake
 westminster
 westward
 wet
-we’d
-we’re
 whale-back
 whaleback
 whalebone
 what
+what's-his-name
 whatever
 whatsoever
-what’s-his-name
 wheal
 wheat
 wheel
@@ -10355,7 +10418,6 @@ wilderness
 wildest
 wilds
 wile
-will
 willing
 win
 wind
@@ -10458,7 +10520,6 @@ worthwhile
 worthy
 would
 wouldn't
-wouldn’t
 wound
 wounded
 wrap
@@ -10489,6 +10550,7 @@ wwi
 x
 x6-foot
 xi
+y
 yacht
 yams
 yank
@@ -10519,22 +10581,19 @@ yoke
 yokels
 you
 you'd
+you'll
 you're
 you've
-young
 younger
 youngest
 youngsters
 your
 youth
 youthful
-you’d
-you’ll
-you’re
-you’ve
 yugoslavia
 yummy
 yup
+z
 zeal
 zealous
 zero

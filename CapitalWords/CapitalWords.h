@@ -13,6 +13,10 @@ vector<CString> m_arrArgs;
 // number of command line arguments
 size_t m_nArgs = 0;
 
+// initialization flag used to signal that preloading
+// data for people or dictionary has been completed
+bool m_bDataInitialized;
+
 // a collection of unique names to be output
 CKeyedCollection<CString, int> m_TotalOutput;
 
@@ -22,15 +26,19 @@ CKeyedCollection<CString, int> m_suffixes;
 // collection of titles like Mr., Mrs., Miss, Uncle, etc.
 CKeyedCollection<CString, int> m_titles;
 
-// words to ignore read from "words.txt" located with the
-// executable
+// words to ignore read from "dictionary.txt" located 
+// with the executable
 CKeyedCollection<CString, int> m_Dictionary;
+
+// names of people
+CKeyedCollection<CString, int> m_People;
 
 // words to ignore read from input file because they are
 // both uppercase and in the dictionary
 CKeyedCollection<CString, int> m_Ignore;
 
-// create a concordance table output for auto-marking a Word document's index
+// create a concordance table output for auto-marking a Word 
+// document's index
 bool m_bConcordance;
 
 // create an uppercase file representing all uppercase words
@@ -100,7 +108,8 @@ const CString m_csTerminators( m_csNonPeriod + _T( "." ));
 // word decorations
 const CString m_csDecor = m_csEnclosures;
 const CString m_csDecorAll = m_csEnclosures + m_csTerminators;
-const CString m_csEverything = m_csDecorAll + m_csSeparators;
+const CString m_csEverything = m_csDecorAll + m_csSeparators + 
+	_T( "[]{} 0123456789=-+*/&%$#@<>" );
 
 
 
