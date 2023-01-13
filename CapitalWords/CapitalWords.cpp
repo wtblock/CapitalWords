@@ -49,7 +49,12 @@ void WriteConsole( CString input, bool bSeparators = false )
 /////////////////////////////////////////////////////////////////////////////
 // add text to the total output collection to provide unique sorted data
 // to be output when processing is complete
-void CollectData( CString& input, CKeyedCollection<CString, int>& data )
+void CollectData
+( 
+	CString& input, 
+	CKeyedCollection<CString, int>& data,
+	bool bConsole = false
+)
 {
 	// if the input is unique, add it to the
 	// collection, otherwise increment the 
@@ -65,17 +70,10 @@ void CollectData( CString& input, CKeyedCollection<CString, int>& data )
 		pCount = shared_ptr<int>( new int( 1 ));
 		data.add( input, pCount );
 
-		// this flag is true when the original data has already 
-		// been loaded (needed because that loading uses this
-		// same routine).
-		if ( m_bDataInitialized )
+		// give the user an update on what is happening
+		if ( bConsole )
 		{
-			// let the user know when new input is added to the existing
-			// dictionary. 
-			if ( m_bDictionary )
-			{
-				WriteConsole( input );
-			}
+			WriteConsole( input );
 		}
 	}
 
@@ -84,18 +82,18 @@ void CollectData( CString& input, CKeyedCollection<CString, int>& data )
 /////////////////////////////////////////////////////////////////////////////
 // add text to the total output collection to provide unique sorted data
 // to be output when processing is complete
-void CollectOutput( CString& input )
+void CollectOutput( CString& input, bool bConsole = false )
 {
-	CollectData( input, m_TotalOutput );
+	CollectData( input, m_TotalOutput, bConsole );
 
 } // CollectOutput
 
 /////////////////////////////////////////////////////////////////////////////
 // add text to the ignored words collection to provide unique sorted data
 // to be written to the console when the /People parameter is active
-void CollectIgnoredWords( CString& input )
+void CollectIgnoredWords( CString& input, bool bConsole = false )
 {
-	CollectData( input, m_Ignore );
+	CollectData( input, m_Ignore, bConsole );
 
 } // CollectIgnoredWords
 
@@ -1793,15 +1791,6 @@ int ReadUppercase()
 			WriteConsole( m_csMessage, true );
 			return 7;
 		}
-		else
-		{
-			m_csMessage.Format
-			(
-				_T( "The \"Dictionary.txt\" file contains:\n" )
-				_T( ".	%d words." ), m_Dictionary.Count
-			);
-			WriteConsole( m_csMessage, true );
-		}
 
 		// we need to load the people file to initialize the 
 		// data that has already been stored
@@ -1817,17 +1806,29 @@ int ReadUppercase()
 			WriteConsole( m_csMessage, true );
 			return 7;
 		}
-		else
-		{
-			m_csMessage.Format
-			(
-				_T( "The \"People.txt\" file contains:\n" )
-				_T( ".	%d words." ), m_TotalOutput.Count
-			);
-			WriteConsole( m_csMessage, true );
-		}
 
-		m_bDataInitialized = true;
+		m_csMessage.Format
+		(
+			_T( "The \"Dictionary.txt\" file contains:\n" )
+			_T( ".	%d words." ), m_Dictionary.Count
+		);
+		WriteConsole( m_csMessage, true );
+
+		m_csMessage.Format
+		(
+			_T( "The \"People.txt\" file contains:\n" )
+			_T( ".	%d words." ), m_TotalOutput.Count
+		);
+		WriteConsole( m_csMessage, true );
+
+		// let the user know the following words on the console
+		// are new words that have been added to the existing 
+		// people.txt file
+		WriteConsole
+		(
+			_T( "The following words were added to the people.txt." ),
+			true
+		);
 	}
 
 	do
@@ -1879,7 +1880,7 @@ int ReadUppercase()
 
 			// Acronym test (all caps)
 			const bool bAcronym = IsAcronym( csToken );
-			if ( !bAcronym )
+			if ( bAcronym )
 			{
 				continue;
 			}
@@ -1898,7 +1899,6 @@ int ReadUppercase()
 				// loop.
 				if ( bExists )
 				{
-					CollectIgnoredWords( csToken );
 					continue;
 				}
 			}
@@ -1906,23 +1906,11 @@ int ReadUppercase()
 			// if the output is unique, add it to the
 			// collection, otherwise increment the 
 			// count of items found
-			CollectOutput( csToken );
+			CollectOutput( csToken, true );
 		}
 		while ( true );
 	}
 	while ( true );
-
-	// write a message to the console of words that 
-	// are ignored. There are cases where an ignored
-	// word can also be a name, such as Larry Bird
-	// where bird is a word and a name. This text
-	// cannot be redirected because it is an error.
-	WriteConsole( _T( "The following words were ignored:" ) );
-
-	for ( auto& node : m_Ignore.Items )
-	{
-		WriteConsole( node.first );
-	}
 
 	return 0;
 } // ReadUppercase
@@ -1954,15 +1942,6 @@ int ReadLowercase()
 			WriteConsole( m_csMessage, true );
 			return 7;
 		}
-		else
-		{
-			m_csMessage.Format
-			(
-				_T( "The initial \"dictionary.txt\" file contains:\n" )
-				_T( ".	%d words." ), m_TotalOutput.Count
-			);
-			WriteConsole( m_csMessage, true );
-		}
 
 		// we need to load the people file to validate the lower case word
 		// are not also people's names
@@ -1978,18 +1957,20 @@ int ReadLowercase()
 			WriteConsole( m_csMessage, true );
 			return 7;
 		}
-		else
-		{
-			m_csMessage.Format
-			(
-				_T( "The \"People.txt\" file contains:\n" )
-				_T( ".	%d words." ), m_People.Count
-			);
-			WriteConsole( m_csMessage, true );
-		}
 
-		// this flag will allow updates to be output to the console
-		m_bDataInitialized = true;
+		m_csMessage.Format
+		(
+			_T( "The initial \"dictionary.txt\" file contains:\n" )
+			_T( ".	%d words." ), m_TotalOutput.Count
+		);
+		WriteConsole( m_csMessage, true );
+
+		m_csMessage.Format
+		(
+			_T( "The \"People.txt\" file contains:\n" )
+			_T( ".	%d words." ), m_People.Count
+		);
+		WriteConsole( m_csMessage, true );
 
 		// let the user know the following words on the console
 		// are new words that have been added to the existing 
@@ -2055,7 +2036,7 @@ int ReadLowercase()
 		// if the output is unique, add it to the
 		// collection, otherwise increment the 
 		// count of items found
-		CollectOutput( csLine );
+		CollectOutput( csLine, true );
 	}
 	while ( true );
 
@@ -2154,10 +2135,6 @@ int Initialize( int argc, TCHAR* argv[] )
 
 	// by default, a dictionary file is not output
 	m_bDictionary = false;
-
-	// initialization flag used to signal that preloading
-	// data for people or dictionary has been completed
-	m_bDataInitialized = false;
 
 	// if the input file is called "names.txt", then it is assumed to be the 
 	// output of this program when m_bConcordance is false, 

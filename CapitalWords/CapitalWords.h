@@ -13,10 +13,6 @@ vector<CString> m_arrArgs;
 // number of command line arguments
 size_t m_nArgs = 0;
 
-// initialization flag used to signal that preloading
-// data for people or dictionary has been completed
-bool m_bDataInitialized;
-
 // a collection of unique names to be output
 CKeyedCollection<CString, int> m_TotalOutput;
 
@@ -101,6 +97,12 @@ const CString m_csEnclosures =
 // name separators
 const CString m_csSeparators = _T( ",;:" );
 
+// symbols
+const CString m_csSymbols = _T( " []{}=-+*/&%$#@<>" );
+
+// numbers
+const CString m_csNumbers = _T( "0123456789" );
+
 // sentence terminators
 const CString m_csNonPeriod( _T( "!?" ) );
 const CString m_csTerminators( m_csNonPeriod + _T( "." ));
@@ -109,7 +111,7 @@ const CString m_csTerminators( m_csNonPeriod + _T( "." ));
 const CString m_csDecor = m_csEnclosures;
 const CString m_csDecorAll = m_csEnclosures + m_csTerminators;
 const CString m_csEverything = m_csDecorAll + m_csSeparators + 
-	_T( "[]{} 0123456789=-+*/&%$#@<>" );
+	+ m_csSymbols + m_csNumbers;
 
 
 
