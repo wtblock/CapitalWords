@@ -98,7 +98,7 @@ const CString m_csEnclosures =
 const CString m_csSeparators = _T( ",;:" );
 
 // symbols
-const CString m_csSymbols = _T( " []{}=-+*/&%$#@<>" );
+const CString m_csSymbols = _T( " `~^[]{}=-+*/&%$#@<>|" );
 
 // numbers
 const CString m_csNumbers = _T( "0123456789" );

@@ -12,7 +12,6 @@ Adah
 Adam
 Adams
 Adamson
-Addendum
 Adele
 Adelle
 Adlai
@@ -20,19 +19,14 @@ Adolph
 Adoph
 Adrian
 Adriana
-Advisory
 Agnes
 Aguirre
 Ahpuck
 Ahrens
 Aifke
-Airlines
 Alamance
 Alan
 Alanson
-Alaska
-Alaskan
-Albanese
 Albemarle
 Albert
 Alberta
@@ -43,7 +37,6 @@ Alexander
 Alexine
 Alford
 Alfred
-Algemeen
 Alger
 Alice
 Alisa
@@ -88,7 +81,6 @@ Angeles
 Angelina
 Angelo
 Angelus
-Anglo-Saxon
 Angus
 Anile
 Anita
@@ -110,7 +102,6 @@ Appalonia
 Apperson
 Appleby
 April
-Arabia
 Arana
 Arceneaux
 Archer
@@ -119,7 +110,6 @@ Ardith
 Ardmore
 Arien
 Arldt
-Armistice
 Arnaud
 Arnette
 Arnold
@@ -131,13 +121,11 @@ Asa
 Ashley
 Astie
 Astor
-Athens
 Atmore
 Aubrey
 Audrey
 Augusta
 Augustine
-Augustinian
 Augustus
 Aur
 Aurora
@@ -164,6 +152,7 @@ Balfour
 Ballast
 Ballasts
 Bancroft
+Banner
 Baptiste
 Barbara
 Barbier
@@ -187,7 +176,6 @@ Basco
 Basco-McAlister
 Basil
 Bass
-Bastrop
 Bates
 Baucom
 Baucum
@@ -301,6 +289,7 @@ Bonnette
 Bonnie
 Bonsall
 Boone
+Booth
 Bootie
 Boots
 Bootsie
@@ -329,8 +318,6 @@ Brahma
 Brandon
 Branson
 Brassard
-Brazil
-Brazilian
 Breaux
 Brenda
 Brent
@@ -339,6 +326,7 @@ Brewer
 Brian
 Brickwadem
 Bridgeman
+Bridges
 Bridgewater
 Briggs
 Brinson
@@ -354,7 +342,6 @@ Brousard
 Broussard
 Broussards
 Brown
-Brownsville
 Bruce
 Bruinsma
 Bruinsmas
@@ -362,7 +349,9 @@ Bruno
 Bryan
 Bryant
 Buchanan
+Buck
 Bud
+Buddy
 Bulinda
 Bumfin
 Bump
@@ -445,7 +434,6 @@ Carters
 Carthage
 Casey
 Cashan
-Cassette
 Castain
 Castille
 Castor
@@ -478,21 +466,16 @@ Charlotte
 Charlsie
 Chatham
 Chautauqua
-Chemistry
 Chemnitz
 Chenault
 Cheniers
 Cheri
 Cherie
-Cherokee
 Cheryl
 Cheshire
 Chester
 Chesters
-Chestertown
-Cheyenne
 Chiasson
-Chickasaw
 Chip
 Chisholm
 Chitto
@@ -504,10 +487,10 @@ Choupique
 Chris
 Christene
 Christiaan
+Christian
 Christie
 Christina
 Christine
-Christmases
 Christopher
 Christy
 Chy
@@ -555,7 +538,6 @@ Collings
 Collins
 Collum
 Colmesneil
-Coloney
 Columbus
 Combs
 Comeaux
@@ -582,6 +564,7 @@ Cory
 Coryell
 Cos
 Cotulla
+Cousins
 Covington
 Cowart
 Cowley
@@ -610,8 +593,6 @@ Cryer
 Cuba
 Cuccia
 Cudd
-Culminating
-Cum
 Cuniff
 Cunningham
 Curl
@@ -703,10 +684,10 @@ Denby
 Denise
 Denison
 Dennis
-Dept
 Depwe
 Dequeen
 Dequincy
+Der
 Dereck
 Deridder
 Derks
@@ -837,6 +818,7 @@ Eastis
 Eatin
 Ebanks
 Eckard
+Ed
 Edam
 Eddie
 Eddith
@@ -920,7 +902,6 @@ Emogene
 Emory
 Emy
 Enderle
-Enemies
 Engelsman
 Enkhuizen
 Ennis
@@ -1061,7 +1042,6 @@ Fritzlar
 Frog
 Frost
 Fruge
-Fueling
 Fuller
 Fulton
 Fults
@@ -1093,7 +1073,6 @@ Garrett
 Gary
 Gaspard
 Gaston
-Gateway
 Gatze
 Gatzes
 Gaudain
@@ -1107,6 +1086,7 @@ Gebauer
 Geisbertus
 Gelderland
 Gene
+Geneva
 Genevieve
 Genii
 Gentry
@@ -1165,7 +1145,6 @@ Godby
 Goddard
 Godwin
 Gonda
-Gondoliers
 Gonzales
 Gooch
 Goodie
@@ -1180,7 +1159,6 @@ Gosney
 Goudkade
 Gouge
 Gougenheim
-Gov
 Grace
 Gracia
 Gracie
@@ -1192,7 +1170,6 @@ Grande
 Granger
 Grannis
 Gray
-Greece
 Green
 Greenberg
 Greene
@@ -1202,13 +1179,13 @@ Greg
 Gregor
 Gregory
 Gretchen
+Grey
 Griffin
 Griffing
 Griffins
 Grigsby
 Grimes
 Groningen
-Gross
 Grotto
 Grove
 Groves
@@ -1250,7 +1227,6 @@ Hall
 Halphen
 Halsum
 Haltom
-Hamburg
 Hamilton
 Hammock
 Hammond
@@ -1269,6 +1245,7 @@ Harbour
 Hardage
 Hardegarijp
 Hardin
+Hardy
 Hargraves
 Harkins
 Harmanus
@@ -1278,7 +1255,6 @@ Harper
 Harriet
 Harris
 Harry
-Hartburg
 Hartley
 Hartner
 Hartwig
@@ -1358,8 +1334,6 @@ Hies
 Hilda
 Hildebrand
 Hill
-Hillcrest
-Hilldale
 Hillebrand
 Hillebrandt
 Hillebrant
@@ -1369,7 +1343,6 @@ Hils
 Hilton
 Hines
 Hiram
-Hiroshima
 Hise
 Hispanics
 Hitt
@@ -1378,18 +1351,14 @@ Hodges
 Hogg
 Holcomb
 Holcombe
-Hollander
-Holliday
 Hollier
 Holly
-Hollywood
 Holman
 Holmes
 Holstead
 Holt
 Holwerd
 Holyn
-Home-building
 Homer
 Hondo
 Hooks
@@ -1425,11 +1394,15 @@ Humboldt
 Humphrey
 Humphreys
 Humphries
+Hunter
 Huntington
 Hutchison
 Hutto
 Hyde
 Hypolete
+II
+III
+IV
 Ida
 Ignatius
 Iiams
@@ -1447,7 +1420,6 @@ Ingrams
 Ingwersen
 Ingwersens
 Internal
-Invariably
 Ioma
 Iona
 Ippolito
@@ -1459,7 +1431,6 @@ Irma
 Irvin
 Isaac
 Isabelle
-Istanbul
 Iva
 Iverson
 Ivey
@@ -1567,7 +1538,10 @@ Josh
 Joshua
 Josiah
 Josie
+Joy
 Joyce
+Jr
+Jr.
 Juan
 Juanita
 Jude
@@ -1678,10 +1652,7 @@ Kolding
 Konecny
 Koning
 Konrad
-Koonce
 Koorman
-Korea
-Korean
 Kothe
 Krause
 Kress
@@ -1711,7 +1682,6 @@ Lacoste
 Lacour
 Lacy
 Ladner
-Lafayette
 Laird
 Lakes
 Lamair
@@ -1749,7 +1719,6 @@ Lavaca
 Laverne
 Lawhon
 Lawrence
-Lazy
 LeBlanc
 LeBleu
 LeBouef
@@ -1808,12 +1777,10 @@ Linda
 Lindbergh
 Lindow
 Lindsey
-Linotype
 Linscomb
 Linsey
 Linson
 Lionel
-Lioness
 Lipscomb
 Lisa
 Littell
@@ -1833,10 +1800,7 @@ Lohman
 Lohmans
 Lois
 Lola
-London
-Londonderry
 Longe
-Longville
 Lonnie
 Loosdrecht
 Lopez
@@ -1899,7 +1863,6 @@ Mabie
 Mac
 MacDonald
 Macha
-Machinists
 Machteldje
 Macomber
 Macon
@@ -1915,7 +1878,7 @@ Maggie
 Magna
 Maguire
 Maison
-Majestic
+Major
 Majorie
 Malachi
 Malcolm
@@ -1950,10 +1913,10 @@ Marian
 Mariann
 Marie
 Marilyn
-Marines
 Mario
 Marion
 Marjorie
+Mark
 Markle
 Marlin
 Marlis
@@ -2053,7 +2016,6 @@ McNeill
 Meaux
 Mecklenberg
 Mecom
-Mediquick
 Meeker
 Meeks
 Megan
@@ -2064,12 +2026,9 @@ Melina
 Melissa
 Melvin
 Melvina
-Memphis
 Mena
 Menard
 Menchaca
-Mendenhall
-Mendico
 Meppel
 Mercer
 Meredith
@@ -2085,13 +2044,12 @@ Metcalf
 Metreyeon
 Meyer
 Mhyrl
-Miami
 Micajah
+Mice
 Michael
 Michel
 Michele
 Michelle
-Middleway
 Miia
 Mikado
 Mike
@@ -2111,7 +2069,7 @@ Minaldi
 Minaldis
 Minchew
 Minerva
-Minisink
+Mines
 Minnie
 Minter
 Minyard
@@ -2126,6 +2084,7 @@ Mollie
 Molly
 Monocacy
 Monroe
+Monsignor
 Monta
 Montgomery
 Montondon
@@ -2189,7 +2148,6 @@ Nathan
 Nathaniel
 Nathans
 Nauta
-Navasota
 Neal
 Neel
 Neelkje
@@ -2269,6 +2227,7 @@ O'Dell
 O'Kane
 O'Kelly
 O'Neal
+O.P.
 Oakley
 Oakleys
 Oberlin
@@ -2294,7 +2253,6 @@ Oosterhuid
 Oostrom
 Opal
 Oppelo
-Orangefield
 Oren
 Orena
 Orestus
@@ -2421,10 +2379,10 @@ Portis
 Pos
 Posey
 Poss
-Potentate
 Pouson
 Pousson
 Powell
+Powers
 Prater
 Prejean
 Premeaux
@@ -2432,8 +2390,8 @@ Premier
 Premo
 Presley
 Preston
+Price
 Pritchett
-Promise
 Propes
 Propst
 Proteus
@@ -2489,11 +2447,9 @@ Redditt
 Reed
 Rees
 Reeves
-Regiments
 Regina
 Reginald
 Rehn
-Reich
 Reid
 Reinke
 Reis
@@ -2505,6 +2461,7 @@ Reo
 Resaca
 Resch
 Reuben
+Reverend
 Rex
 Reynolds
 Rhea
@@ -2593,7 +2550,6 @@ Rosewig
 Rosie
 Ross
 Roswell
-Rotarian
 Rouse
 Rowena
 Rowland
@@ -2616,6 +2572,7 @@ Rufus
 Ruhr
 Russel
 Russell
+Russo
 Rusticus
 Ruston
 Ruth
@@ -2628,6 +2585,7 @@ Ryder
 Ryland
 S(pencer
 Sahine
+Saint
 Salida
 Salk
 Sallie
@@ -2654,7 +2612,6 @@ Saunders
 Savage
 Savannah
 Savigne
-Savior
 Savoie
 Savoy
 Sawyer
@@ -2680,7 +2637,6 @@ Seals
 Sealy
 Seamons
 Sean
-Seattle
 Seawillow
 Sebe
 Sebum
@@ -2726,7 +2682,6 @@ Shoals
 Shoemaker
 Shofner
 Shorty
-Shriner
 Shropshire
 Shultz
 Sibbe
@@ -2786,7 +2741,6 @@ Soule
 Sousa
 Spaight
 Spalding
-Specialized
 Speedy
 Speights
 Spence
@@ -2802,14 +2756,14 @@ Spoorweg-Maatschappig
 Springfield
 Spurger
 Spurlock
+Sr
+Sr.
 Staals
 Staci
 Stacy
 Staffen
 Staffens
 Staffers
-Staffordshire
-Stakes
 Stan
 Stanislaus
 Stanley
@@ -2853,17 +2807,13 @@ Stonegate
 Stover
 Stowell
 Strahan
-Strangely
 Stratford
 Strawbridge
 Streetman
 Streetmans
 Strickland
-Stripes
 Stroud
 Stuart
-Studebaker
-Subdivision
 Sudela
 Sue
 Sullivan
@@ -2880,12 +2830,10 @@ Swafford
 Sweeney
 Sweeneys
 Sweeny
-Sweeps
 Swisher
 Sylvester
 Sylvia
 Symantha
-Syndicate
 Taft
 Talbot
 Talley
@@ -2931,8 +2879,8 @@ Theodorus
 Theodosius
 Theogene
 Theresa
+Theriot
 Theriot-Fortenberry
-Theta
 Thibodeaux
 Thomas
 Thompson
@@ -2942,7 +2890,6 @@ Thornell
 Thornton
 Thorp
 Threadgill
-Thursdays
 Tibbetts
 Tiffany
 Tigue
@@ -3002,6 +2949,8 @@ Urshel
 Ursula
 Ute
 Utingeradeel
+V
+VI
 Va
 Valdosta
 Valerie
@@ -3022,9 +2971,7 @@ Veendam
 Vegt
 Velma
 Velva
-Venezuela
 Verble
-Verboon
 Verda
 Vereenigde
 Vermilion
@@ -3036,6 +2983,7 @@ Vernor
 Verret
 Viator
 Vic
+Vice
 Vicki
 Vickie
 Victor
@@ -3097,7 +3045,6 @@ Washington
 Watcha
 Waterman
 Waterston
-Watson
 Watts
 Wayne
 Weatherford
@@ -3112,7 +3059,6 @@ Weingarten
 Weisbach
 Weisback
 Weissmuller
-WelI
 Welch
 Weldon
 Welker
@@ -3136,8 +3082,6 @@ Whatley
 Wheeler
 Wheeling
 Whelply
-Where'd
-Whites
 Whitley
 Whitmire
 Whitney
@@ -3238,6 +3182,7 @@ Zeke
 Zerengue
 Zillah
 Zoe
+Zuid
 Zuid-
 Zuid-Afrikaansche
 Zuider

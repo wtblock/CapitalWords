@@ -1075,7 +1075,7 @@ bool IsSuffix( CString input )
 	bool value = false;
 
 	// trim some characters except period since period is part of Jr. and Sr.
-	input.Trim( m_csDecor );
+	input.Trim( m_csDecor + m_csSeparators );
 
 	// before test, remove the plural if present ('s)
 	HandlePlural( input );
@@ -1463,7 +1463,7 @@ void  BuildOutputString
 	// an unclosed parenthesis is the sign of a problem, 
 	// so remove all words beginning with the open parenthesis
 	// word.
-	HandleUnclosedParenthesis( Output );
+	//HandleUnclosedParenthesis( Output );
 
 	// append the capital words separated by spaces
 	int nCount = 0;
@@ -1676,7 +1676,7 @@ int ReadWords()
 			// by stripping off the plural suffix
 			if ( !bTerminate )
 			{
-				HandlePlural( csLine );
+				bTerminate = HandlePlural( csLine );
 			}
 
 			// add the line to the output array
@@ -1750,6 +1750,11 @@ int ReadWords()
 // test for an acronym
 bool IsAcronym( CString& input )
 {
+	if ( IsSuffix( input ) )
+	{
+		return false;
+	}
+
 	bool value = true;
 	const int nLen = input.GetLength();
 	for ( int index = 0; index < nLen; index++ )
@@ -1768,6 +1773,87 @@ bool IsAcronym( CString& input )
 
 	return value;
 } // IsAcronym
+
+/////////////////////////////////////////////////////////////////////////////
+// custom trim to handle suffixes that end in period
+// returns true if the value is a suffix
+bool CustomTrim( CString& input )
+{
+	bool value = false;
+
+	// trim non-text from both ends
+	input.Trim
+	(
+		m_csDecor + m_csNonPeriod + 
+		m_csNumbers + m_csSymbols + m_csSeparators
+	);
+
+	// strip off plural suffix
+	HandlePlural( input );
+
+	// trim non-text from both ends after potential 
+	// plural correction
+	input.Trim
+	(
+		m_csDecor + m_csNonPeriod + 
+		m_csNumbers + m_csSymbols + m_csSeparators
+	);
+
+	// should we trim period also
+	bool bTrimPeriod = true;
+	if ( IsSuffix( input ) )
+	{
+		const CString csLeft = input.Left( 3 );
+		if
+		(
+			csLeft == _T( "Sr." ) ||
+			csLeft == _T( "Jr." ) ||
+			csLeft == _T( "O.P" )
+		)
+		{
+			bTrimPeriod = false;
+		}
+
+		// the input is a suffix
+		value = true;
+	}
+
+	if ( bTrimPeriod )
+	{
+		input.Trim( _T( "." ));
+
+		// trim non-text from both ends
+		input.Trim
+		(
+			m_csDecor + m_csNonPeriod +
+			m_csNumbers + m_csSymbols + m_csSeparators
+		);
+
+		// strip off plural suffix
+		HandlePlural( input );
+
+		// trim non-text from both ends after potential 
+		// plural correction
+		input.Trim
+		(
+			m_csDecor + m_csNonPeriod +
+			m_csNumbers + m_csSymbols + m_csSeparators
+		);
+
+		// try again after trimming everything
+		if ( IsSuffix( input ) )
+		{
+			// the input is a suffix
+			value = true;
+		}
+		else
+		{
+			input.Trim( m_csEverything );
+		}
+	}
+
+	return value;
+} // CustomTrim
 
 /////////////////////////////////////////////////////////////////////////////
 // read the words file named in the first parameter of the program
@@ -1840,9 +1926,6 @@ int ReadUppercase()
 			break;
 		}
 
-		// trim non-text from both ends
-		csLine.Trim( m_csEverything );
-
 		// ignore empty lines
 		if ( csLine.IsEmpty() )
 		{
@@ -1863,8 +1946,21 @@ int ReadUppercase()
 			{
 				break;
 			}
-			// strip off plural suffix
-			HandlePlural( csToken );
+
+			// custom trim handles trimming and will ignore trailing
+			// period for suffixes like Jr. and Sr.
+			const bool bSuffix = CustomTrim( csToken );
+
+			if ( csToken.IsEmpty() )
+			{
+				continue;
+			}
+
+			if ( bSuffix )
+			{
+				CollectOutput( csToken, true );
+				continue;
+			}
 
 			// leading character of the input
 			const TCHAR cFirst = csToken[ 0 ];
@@ -1990,53 +2086,79 @@ int ReadLowercase()
 			break;
 		}
 
-		// trim non-text from both ends
-		csLine.Trim( m_csEverything );
-
 		// ignore empty lines
 		if ( csLine.IsEmpty() )
 		{
 			continue;
 		}
 
-		// strip off plural suffix
-		HandlePlural( csLine );
-
-		// plural handling could affect the length
-		// ignore empty lines
-		if ( csLine.IsEmpty() )
+		// the line is supposed to be a single word, but Word tables
+		// when converted to text output words separated with only
+		// a carriage return which means there can be several words
+		// in a single line. The following loop will parse those
+		// words out of the line.
+		int nStart = 0;
+		const CString csDelim( _T( "\r" ) );
+		do
 		{
-			continue;
+			CString csToken = csLine.Tokenize( csDelim, nStart );
+			if ( csToken.IsEmpty() )
+			{
+				break;
+			}
+
+			// custom trim handles trimming and will ignore trailing
+			// period for suffixes like Jr. and Sr.
+			const bool bSuffix = CustomTrim( csToken );
+
+			if ( csToken.IsEmpty() )
+			{
+				continue;
+			}
+
+			// if it is a suffix, then it is not lowercase
+			if ( bSuffix )
+			{
+				continue;
+			}
+
+			const CString csLast = csToken.Right( 1 );
+			if ( csLast == _T( "." ) )
+			{
+				const CString csTest = csToken;
+			}
+
+			// leading character of the input
+			const TCHAR cFirst = csToken[ 0 ];
+
+			// test for lowercase
+			const bool bLower = cFirst >= 'a' && cFirst <= 'z';
+
+			if ( !bLower )
+			{
+				continue;
+			}
+
+			const int nLen = csToken.GetLength();
+
+			// test to see if the uppercase first letter version
+			// of this word is also the name of a person
+			CString csName = csToken.Left( 1 );
+			csName.MakeUpper();
+			csName += csToken.Right( nLen - 1 );
+			const bool bName = m_People.Exists[ csName ];
+			if ( bName )
+			{
+				continue;
+			}
+
+			// if the output is unique, add it to the
+			// collection, otherwise increment the 
+			// count of items found
+			csToken.MakeLower();
+			CollectOutput( csToken, true );
 		}
-
-		// leading character of the input
-		const TCHAR cFirst = csLine[ 0 ];
-
-		// test for lowercase
-		const bool bUpper = cFirst >= 'a' && cFirst <= 'z';
-
-		if ( !bUpper )
-		{
-			continue;
-		}
-
-		const int nLen = csLine.GetLength();
-
-		// test to see if the uppercase first letter version
-		// of this word is also the name of a person
-		CString csName = csLine.Left( 1 );
-		csName.MakeUpper();
-		csName += csLine.Right( nLen - 1 );
-		const bool bName = m_People.Exists[ csName ];
-		if ( bName )
-		{
-			continue;
-		}
-
-		// if the output is unique, add it to the
-		// collection, otherwise increment the 
-		// count of items found
-		CollectOutput( csLine, true );
+		while ( true );
 	}
 	while ( true );
 
