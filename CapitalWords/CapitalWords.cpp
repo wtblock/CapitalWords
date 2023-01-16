@@ -1177,6 +1177,36 @@ bool IsEclamation( CString& input )
 } // IsEclamation
 
 /////////////////////////////////////////////////////////////////////////////
+// test for an acronym
+bool IsAcronym( CString input )
+{
+	if ( IsSuffix( input ) )
+	{
+		return false;
+	}
+
+	input.Trim( m_csEverything );
+
+	bool value = true;
+	const int nLen = input.GetLength();
+	for ( int index = 0; index < nLen; index++ )
+	{
+		// indexed character of the input
+		const TCHAR cChar = input[ index ];
+
+		// test for lowercase
+		const bool bLower = cChar >= 'a' && cChar <= 'z';
+		if ( bLower )
+		{
+			value = false;
+			break;
+		}
+	}
+
+	return value;
+} // IsAcronym
+
+/////////////////////////////////////////////////////////////////////////////
 // returns true if the word should be ignored, i.e. 
 // not included in the output vector
 bool IgnoreWord( CString word )
@@ -1220,24 +1250,33 @@ bool IgnoreWord( CString word )
 		return value;
 	}
 
-	CString csLower = word;
-	csLower.MakeLower();
-
-	// ignore if the lowercase version is in the  collection
-	value = m_Dictionary.Exists[ csLower ];
-	if ( !value )
+	// acronyms are not allowed
+	const bool bAcronym = IsAcronym( word );
+	if ( bAcronym )
 	{
-		csLower.Trim( m_csEverything );
+		value = true;
+	}
+	else
+	{
+		CString csLower = word;
+		csLower.MakeLower();
 
-		// single letters are ignored
-		nLen = csLower.GetLength();
-		value = nLen < 2;
-
-		// if still not being ignored, test to see if 
-		// the word is in the ignore word collection
+		// ignore if the lowercase version is in the  collection
+		value = m_Dictionary.Exists[ csLower ];
 		if ( !value )
 		{
-			value = m_Dictionary.Exists[ csLower ];
+			csLower.Trim( m_csEverything );
+
+			// single letters are ignored
+			nLen = csLower.GetLength();
+			value = nLen < 2;
+
+			// if still not being ignored, test to see if 
+			// the word is in the ignore word collection
+			if ( !value )
+			{
+				value = m_Dictionary.Exists[ csLower ];
+			}
 		}
 	}
 
@@ -1745,34 +1784,6 @@ int ReadWords()
 
 	return 0;
 } // ReadWords
-
-/////////////////////////////////////////////////////////////////////////////
-// test for an acronym
-bool IsAcronym( CString& input )
-{
-	if ( IsSuffix( input ) )
-	{
-		return false;
-	}
-
-	bool value = true;
-	const int nLen = input.GetLength();
-	for ( int index = 0; index < nLen; index++ )
-	{
-		// indexed character of the input
-		const TCHAR cChar = input[ index ];
-
-		// test for lowercase
-		const bool bLower = cChar >= 'a' && cChar <= 'z';
-		if ( bLower )
-		{
-			value = false;
-			break;
-		}
-	}
-
-	return value;
-} // IsAcronym
 
 /////////////////////////////////////////////////////////////////////////////
 // custom trim to handle suffixes that end in period

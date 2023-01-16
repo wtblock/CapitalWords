@@ -1,4 +1,5 @@
 a
+aanteekeningen
 aas
 abandon
 abandoned
@@ -306,6 +307,7 @@ amendments
 america
 american
 americans
+amerika
 amicable
 amid
 among
@@ -2270,7 +2272,6 @@ craft
 crafts
 craftsmen
 cramped
-crane
 crank
 crash
 crawl
@@ -3082,6 +3083,7 @@ educational
 educations
 educator
 educators
+eene
 effect
 effectively
 effects
@@ -5727,6 +5729,7 @@ lucky
 lufkin
 lumber
 lumberton
+lummus
 lunch
 luncheons
 lunches
@@ -6390,6 +6393,7 @@ non-existent
 non-fraternization
 none
 noon
+noord
 nor
 norfolk
 normal
@@ -7898,6 +7902,7 @@ reign
 reinforcements
 reins
 reinterred
+reis
 rejoined
 relate
 related
@@ -9201,6 +9206,7 @@ state-wide
 stated
 statement
 statements
+staten
 states
 static
 station
@@ -9858,6 +9864,7 @@ tie
 tied
 ties
 tight
+tijdens
 til
 tile
 tiles
@@ -10419,12 +10426,14 @@ vehicle
 veil
 vein
 veneer
+venezuela
 ventura
 venture
 ventured
 verbal
 verbatim
 verboon
+vereenigde
 verhandelaar
 verifies
 veritable
