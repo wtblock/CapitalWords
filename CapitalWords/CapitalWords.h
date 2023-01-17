@@ -33,6 +33,11 @@ CKeyedCollection<CString, int> m_People;
 // both uppercase and in the dictionary
 CKeyedCollection<CString, int> m_Ignore;
 
+// names to exclude from the output because they are
+// in the "exclude.txt" in the same folder as the input
+// file.
+CKeyedCollection<CString, int> m_Exclude;
+
 // create a concordance table output for auto-marking a Word 
 // document's index
 bool m_bConcordance;

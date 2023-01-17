@@ -26,6 +26,7 @@ Aifke
 Alamance
 Alan
 Alanson
+Albanese
 Albemarle
 Albert
 Alberta
@@ -223,6 +224,7 @@ Benton
 Beppa
 Berian
 Berkhout
+Berlin
 Berly
 Bernard
 Bernice
@@ -902,6 +904,7 @@ Emy
 Enderle
 Engelsman
 Enkhuizen
+Enmon
 Ennis
 Enola
 Enrone
@@ -1232,6 +1235,7 @@ Hanchett
 Handley
 Hanks
 Hannah
+Hannah McKenzie
 Hansbro
 Hanse
 Hansen
@@ -1349,6 +1353,7 @@ Hodges
 Hogg
 Holcomb
 Holcombe
+Holliday
 Hollier
 Holly
 Holman
@@ -1493,6 +1498,7 @@ Jesuit
 Jesus
 Jethie
 Jett
+Jewel
 Jewell
 Jewett
 Jiffy
@@ -1798,6 +1804,7 @@ Lohman
 Lohmans
 Lois
 Lola
+Long
 Longe
 Lonnie
 Loosdrecht
@@ -2054,6 +2061,7 @@ Mikiel
 Milam
 Milberry
 Mildred
+Miles
 Milioani
 Miller
 Millet
@@ -2270,6 +2278,7 @@ Ozee
 O’Brien
 O’Kane
 Paduch
+Palermo
 Palm
 Palmer
 Pam
@@ -2355,6 +2364,7 @@ Pipkin
 Pitre
 Placette
 Plaisance
+Plane
 Plato
 Pleiter
 Plessy
@@ -2368,6 +2378,7 @@ Pompano
 Pompom
 Pon
 Ponchatoula
+Pont
 Poole
 Pop
 Porter
@@ -2460,6 +2471,7 @@ Reverend
 Rex
 Reynolds
 Rhea
+Rhode
 Rhodes
 Rhonda
 Rice
@@ -2570,6 +2582,7 @@ Russell
 Russo
 Rusticus
 Ruston
+Rusty
 Ruth
 Ruthie
 Ruysenaar
@@ -3074,6 +3087,7 @@ Whatley
 Wheeler
 Wheeling
 Whelply
+White
 Whitley
 Whitmire
 Whitney
@@ -3117,6 +3131,7 @@ Wingate
 Winifred
 Winnie
 Winston
+Winters
 Winton
 Wintress
 Wippenitz
@@ -3174,8 +3189,4 @@ Zeke
 Zerengue
 Zillah
 Zoe
-Zuid
-Zuid-
-Zuid-Afrikaansche
-Zuider
 Zuurdyk

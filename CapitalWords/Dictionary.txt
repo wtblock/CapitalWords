@@ -243,7 +243,6 @@ alarm
 alas
 alaska
 alaskan
-albanese
 albeit
 albuquerque
 alcohol
@@ -899,7 +898,6 @@ benefit
 benefits
 benumbed
 bereavement
-berlin
 berries
 berry
 beside
@@ -3245,7 +3243,6 @@ enlist
 enlisted
 enlistment
 enlistments
-enmon
 enormous
 enough
 enriched
@@ -4349,6 +4346,7 @@ guess
 guessed
 guest
 guests
+guiana
 guidance
 guide
 guided
@@ -4669,7 +4667,6 @@ holland-america
 hollander
 hollanders
 hollered
-holliday
 hollow
 hollywood
 holstein
@@ -5661,7 +5658,6 @@ logs
 london
 londonderry
 lone
-long
 long-leaf
 long-lost
 long-since
@@ -6031,7 +6027,6 @@ migration
 milan
 mild
 mile
-miles
 milestone
 militant
 military
@@ -6566,6 +6561,7 @@ ones
 onions
 only
 onto
+oom
 opelousas
 open
 opened
@@ -6745,7 +6741,6 @@ palace
 palates
 palatial
 pale
-palermo
 pallbearers
 palm
 palmetto
@@ -7112,7 +7107,6 @@ plaid
 plain
 plaited
 plan
-plane
 planer
 planes
 planned
@@ -8130,7 +8124,6 @@ rewarding
 rewrite
 rhine
 rhineland
-rhode
 rhythm
 ribbon
 ribbons
@@ -8289,7 +8282,6 @@ rushed
 rushing
 russia
 rustling
-rusty
 ruthless
 ruts
 rutted
@@ -9116,6 +9108,7 @@ sponsors
 spontaneous
 spooks
 spoon
+spoorweg-maatschappig
 sport
 sported
 sporting
@@ -10452,7 +10445,6 @@ veterinary
 vets
 via
 viable
-vice
 vice-president
 vices
 vicinity
@@ -10729,7 +10721,6 @@ whiskey
 whispered
 whistle
 whistles
-white
 whiter
 whites
 who
@@ -10793,7 +10784,6 @@ winsome
 winston-salem
 winter
 wintered
-winters
 wiped
 wire
 wired
@@ -10963,3 +10953,6 @@ zithers
 zone
 zoning
 zoomed
+zuid
+zuid-afrikaansche
+zuider

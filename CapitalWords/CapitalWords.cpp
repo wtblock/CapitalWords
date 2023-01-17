@@ -988,6 +988,60 @@ bool ReadDictionary
 } // ReadDictionary
 
 /////////////////////////////////////////////////////////////////////////////
+// create a collection of names to exclude from "exclude.txt" file
+bool ReadExcludeData
+( 
+	CString csPath, CKeyedCollection< CString, int >& words 
+)
+{
+	bool bOK = false;
+	const CString csFolder = CHelper::GetFolder( csPath );
+	const CString csData = csFolder + _T( "Exclude.txt" );
+	
+	WriteConsole( _T( "Names to be excluded:" ) );
+	WriteConsole( csData, true );
+
+	if ( !::PathFileExists( csData ) )
+	{
+		return bOK;
+	}
+
+	// open the dictionary file and error out on failure
+	CStdioFile file;
+	if ( !file.Open( csData, CFile::modeRead | CFile::typeText ) )
+	{
+		return bOK;
+	}
+
+	do
+	{
+		// read a line of text from the Dictionary.txt file
+		CString csLine;
+		if ( !file.ReadString( csLine ) )
+		{
+			break;
+		}
+
+		// trim whitespace from both ends
+		csLine.Trim();
+
+
+		// ignore empty lines
+		if ( csLine.IsEmpty() )
+		{
+			continue;
+		}
+
+		CollectData( csLine, words );
+	}
+	while ( true );
+
+	bOK = words.Count > 0;
+	return bOK;
+
+} // ReadExcludeData
+
+/////////////////////////////////////////////////////////////////////////////
 // build a map of people names given the path of the executable
 // which is used to locate the People.txt file
 bool ReadPeopleNames
@@ -1606,6 +1660,10 @@ int ReadWords()
 		return 7;
 	}
 
+	// read exclude.txt file to get a collection of names excluded
+	// from being output
+	ReadExcludeData( m_arrArgs[ 1 ], m_Exclude );
+
 	do
 	{
 		// read a single line of text
@@ -2214,6 +2272,12 @@ void Usage()
 		_T( ".\n" )
 		_T( ".  input_file is the pathname of the input file.\n" )
 		_T( ".\n" )
+		_T( ".  no other parameter - the output is names as they\n" )
+		_T( ".    as they appear in the input file. If there is an\n" )
+		_T( ".    \"exclude.txt\" file in the folder with the input\n" )
+		_T( ".    file, the names in the exclude file will be excluded\n" )
+		_T( ".    from being output.\n" )
+		_T( ".\n" )
 		_T( ".  /C[oncordance] - is optional.\n" )
 		_T( ".    yields two columns separated by tilde (~)\n" )
 		_T( ".    which can be pasted into a Word document\n" )
@@ -2229,7 +2293,7 @@ void Usage()
 		_T( ".\n" )
 		_T( ".  /P[eople] - is optional.\n" )
 		_T( ".    yields an output of uppercase words from the input file\n" )
-		_T( ".    when the lowercase version of the word is not in the.\n" )
+		_T( ".    when the lowercase version of the word is not in the\n" )
 		_T( ".    \"Dictionary.txt\" file. The idea is an uppercase word\n" )
 		_T( ".    not in the dictionary is a proper name, but the reality\n" )
 		_T( ".    is, there are other names like cities can result in errors.\n" )
@@ -2243,11 +2307,12 @@ void Usage()
 		_T( ".    a means of updating the dictionary by replacing the .\n" )
 		_T( ".    \"Dictionary.txt\" file with this output.\n" )
 		_T( ".\n" )
-		_T( "NOTE: a special case is where the input_file is \"names.txt\" which\n" )
-		_T( ".  is in the format of the standard output when concordance is\n" )
-		_T( ".  set to false. In this case, the program will output a concordance\n" )
-		_T( ".  table using the names.txt file as its input. \n" )
-		_T( "." )
+		_T( "NOTE: special cases:\n" )
+		_T( ".  1) A special case is where the input_file is \"names.txt\" which\n" )
+		_T( ".     is in the format of the standard output when concordance is\n" )
+		_T( ".     set to false. In this case, the program will output a concordance\n" )
+		_T( ".     table using the \"names.txt\" file as its input. \n" )
+		_T( ".\n" )
 	);
 } // Usage
 
@@ -2453,6 +2518,12 @@ void WriteTotalOutput()
 			csOut = BuildConcordance( csToken );
 		}
 
+		// test for exclusion
+		if ( m_Exclude.Exists[ csOut ] )
+		{
+			continue;
+		}
+
 		// write the output line to the console (which
 		// can be redirected to another text file)
 		WriteOutput( csOut );
@@ -2482,7 +2553,7 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 		// where there is expected to be a minimum of two words
 		// for the first and last names
 		ReadNames();
-	} 
+	}
 	// looking for upper case word. If m_bPeople is true, the
 	// uppercase words are filtered out it their lowercase
 	// version is in the dictionary (trying to find proper
