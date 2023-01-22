@@ -1022,10 +1022,6 @@ bool ReadExcludeData
 			break;
 		}
 
-		// trim whitespace from both ends
-		csLine.Trim();
-
-
 		// ignore empty lines
 		if ( csLine.IsEmpty() )
 		{
