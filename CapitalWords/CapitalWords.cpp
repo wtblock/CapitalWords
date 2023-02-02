@@ -1669,6 +1669,21 @@ int ReadWords()
 			break;
 		}
 
+		// hold on to the initial value
+		const CString csTemp = csLine;
+
+		// trim leading numbers (footnotes)
+		csLine.TrimLeft( _T( "0123456789,." ));
+
+		// if the line was all numbers, restore
+		// the line as a place holder to possibly
+		// separate two words and prevent them from 
+		// being mistaken as part of a whole name
+		if ( csLine.IsEmpty() )
+		{
+			csLine = csTemp;
+		}
+
 		// length of the line
 		const size_t nLen = csLine.GetLength();
 
