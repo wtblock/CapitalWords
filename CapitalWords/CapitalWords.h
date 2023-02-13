@@ -59,6 +59,11 @@ bool m_bLowercase;
 // the dictionary
 bool m_bDictionary;
 
+// a stream of words is generated from the input where every
+// space, tab, hyphen, or ellipsis is replaced with and end-
+// of-line (carriage return / line feed).
+bool m_bWords;
+
 // this stream can be redirected from the command line to allow the 
 // output you are interested in to be captured into another file
 // (Ex. > out_file.csv)

@@ -2246,6 +2246,78 @@ int ReadLowercase()
 } // ReadLowercase
 
 /////////////////////////////////////////////////////////////////////////////
+// read a text file and generate a stream of words
+int GenerateWords()
+{
+	// line of text to be read
+	CString csLine;
+
+	do
+	{
+		// read a line of text from the input file
+		if ( !m_file.ReadString( csLine ) )
+		{
+			break;
+		}
+
+		// ignore empty lines
+		if ( csLine.IsEmpty() )
+		{
+			continue;
+		}
+
+		// replace left single quote with a single quote
+		csLine.Replace( _T( "\xe2\x80\x98" ), _T( "'" ));
+
+		// replace right single quote with a single quote
+		csLine.Replace( _T( "\xe2\x80\x99" ), _T( "'" ));
+
+		// replace left double quote with a double quote
+		csLine.Replace( _T( "\xe2\x80\x9c" ), _T( "\"" ));
+
+		// replace right double quote with a double quote
+		csLine.Replace( _T( "\xe2\x80\x9d" ), _T( "\"" ));
+
+		// replace ellipsis with a single space
+		csLine.Replace( _T( "\xe2\x80\xa6" ), _T( " " ));
+
+		// replace ellipsis with a single space
+		csLine.Replace( _T( "..." ), _T( " " ));
+
+		// replace en dash with a single space
+		csLine.Replace( _T( "\xe2\x80\x93" ), _T( " " ));
+
+		// replace en dash with a single space
+		csLine.Replace( _T( "\x96" ), _T( " " ));
+
+		// replace em dash with a single space
+		csLine.Replace( _T( "\xe2\x80\x94" ), _T( " " ));
+
+		// replace em dash with a single space
+		csLine.Replace( _T( "\x97" ), _T( " " ));
+
+	// parse the line of text into words
+		int nStart = 0;
+		const CString csDelim( _T( " -\t" ) );
+		do
+		{
+			CString csToken = csLine.Tokenize( csDelim, nStart );
+			if ( csToken.IsEmpty() )
+			{
+				break;
+			}
+
+			// write the word to the output stream
+			WriteOutput( csToken );
+		}
+		while ( true );
+	}
+	while ( true );
+
+	return 0;
+} // GenerateWords
+
+/////////////////////////////////////////////////////////////////////////////
 // provide the user information on how to use the application
 void Usage()
 {
@@ -2274,7 +2346,7 @@ void Usage()
 		_T( ".\n" )
 		_T( "Usage:\n" )
 		_T( ".\n" )
-		_T( ".  CapitalWords input_file [ /C | /U | /P | /L | /D ]\n" )
+		_T( ".  CapitalWords input_file [ /C | /U | /P | /L | /D | /W ]\n" )
 		_T( ".\n" )
 		_T( "Where:\n" )
 		_T( ".  Items enclosed in square brackets ([]) are optional.\n" )
@@ -2318,6 +2390,10 @@ void Usage()
 		_T( ".    a means of updating the dictionary by replacing the .\n" )
 		_T( ".    \"Dictionary.txt\" file with this output.\n" )
 		_T( ".\n" )
+		_T( ".  /W[ords] - is optional.\n" )
+		_T( ".    yields an output of words where every space, tab, hyphen, or ellipsis\n" )
+		_T( ".    is replaced with a carriage return / line feed.\n" )
+		_T( ".\n" )
 		_T( "NOTE: special cases:\n" )
 		_T( ".  1) A special case is where the input_file is \"names.txt\" which\n" )
 		_T( ".     is in the format of the standard output when concordance is\n" )
@@ -2344,6 +2420,9 @@ int Initialize( int argc, TCHAR* argv[] )
 
 	// by default, a dictionary file is not output
 	m_bDictionary = false;
+
+	// by default, a words file is not output
+	m_bWords = false;
 
 	// if the input file is called "names.txt", then it is assumed to be the 
 	// output of this program when m_bConcordance is false, 
@@ -2453,6 +2532,14 @@ int Initialize( int argc, TCHAR* argv[] )
 		{
 			m_bDictionary = true;
 			m_csMessage.Format( _T( "Generating a dictionary output." ));
+			WriteConsole( m_csMessage, true );
+		}
+		// a "/Words" parameter will automatically output
+		// a stream of words
+		else if ( csArg.Left( 2 ) == _T( "/W" ) )
+		{
+			m_bWords = true;
+			m_csMessage.Format( _T( "Generating a words output." ));
 			WriteConsole( m_csMessage, true );
 		}
 		// an unknown parameter will generate a failure message
@@ -2589,6 +2676,18 @@ int _tmain( int argc, TCHAR* argv[], TCHAR* envp[] )
 		{
 			return nReturn;
 		}
+	}
+	// reading a text file and generating a word stream
+	else if ( m_bWords )
+	{
+		nReturn = GenerateWords();
+		if ( nReturn != 0 )
+		{
+			return nReturn;
+		}
+
+		// all is good
+		return 0;
 	}
 	else
 	// reading the normal input file containing words from 
