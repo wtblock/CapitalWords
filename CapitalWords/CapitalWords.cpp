@@ -84,6 +84,12 @@ void CollectData
 // to be output when processing is complete
 void CollectOutput( CString& input, bool bConsole = false )
 {
+	const int nPos = input.FindOneOf( _T( " " ) );
+	if ( nPos == -1 )
+	{
+		return;
+	}
+
 	CollectData( input, m_TotalOutput, bConsole );
 
 } // CollectOutput
@@ -1523,7 +1529,7 @@ void AddOutputData
 		if ( nFullNames > 1 && nWords < 3 )
 		{
 			continue;
-		}
+		} 
 
 		// the last name of an initial is not allowed
 		if ( IsAnInitial( words[ nWords - 1 ] ) )
@@ -1531,7 +1537,7 @@ void AddOutputData
 			continue;
 		}
 
-		csFullName.Trim( m_csDecor + m_csEnclosures );
+		csFullName.Trim( m_csDecor + m_csEnclosures + _T( " " ));
 
 		// if the output is unique, add it to the
 		// collection, otherwise increment the 
@@ -1590,6 +1596,8 @@ void  BuildOutputString
 		csOutput.Empty();
 		return;
 	}
+
+	csOutput.Trim();
 
 	// collect the output
 	AddOutputData( csOutput );
@@ -1673,7 +1681,8 @@ int ReadWords()
 		const CString csTemp = csLine;
 
 		// trim leading numbers (footnotes)
-		csLine.TrimLeft( _T( "0123456789,." ));
+		csLine.TrimLeft( _T( " 0123456789,." ) );
+		csLine.TrimRight( _T( " 0123456789" ) );
 
 		// if the line was all numbers, restore
 		// the line as a place holder to possibly
@@ -2296,9 +2305,49 @@ int GenerateWords()
 		// replace em dash with a single space
 		csLine.Replace( _T( "\x97" ), _T( " " ));
 
-	// parse the line of text into words
+		// replace tabs with periods. There are normally no
+		// tabs in my Word files, but when tables are output
+		// I replace the table text by copying the table in
+		// Word to the clipboard and then pasting over the
+		// default text output. This is done to prevent a table
+		// of names from becoming a list of names that will be
+		// run together. For example:
+		//	John Doe
+		//	Jane Doe
+		// would look like a single name with four words which
+		// is the reason for the manual intervention. Note
+		// that a single column table of names will still
+		// cause this problem because there will be no tab
+		// separators after the paste.
+		const int nTabs = csLine.Replace( _T( "\t" ), _T( ". " ));
+		
+		// terminate the line with a period if any tabs were found
+		if ( nTabs > 0 )
+		{
+			csLine.AppendChar( '.' );
+		}
+
+		// these are examples of comma separators we want to protect
+		// by replacing the commas with a pipe character
+		csLine.Replace( _T( ", Sr." ), _T( "| Sr." ) );
+		csLine.Replace( _T( ", Jr." ), _T( "| Jr." ) );
+		csLine.Replace( _T( ", .O.P." ), _T( "| .O.P." ) );
+
+		// replace a comma with a period (to break up a list
+		// of names and keep them separate), i.e.:
+		//	John Doe, Jane Doe
+		// looks like a name with four words unless
+		// we replace the commas with periods since
+		// periods are treated as terminators instead
+		// of separators.
+		csLine.Replace( _T( "," ), _T( "." ));
+
+		// replace any pipe characters with commas
+		csLine.Replace( '|', ',' );
+
+		// parse the line of text into words
 		int nStart = 0;
-		const CString csDelim( _T( " -\t" ) );
+		const CString csDelim( _T( " -" ) );
 		do
 		{
 			CString csToken = csLine.Tokenize( csDelim, nStart );
