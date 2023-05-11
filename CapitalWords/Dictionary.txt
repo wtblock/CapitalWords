@@ -1889,7 +1889,6 @@ beaten
 beating
 beatles
 beats
-beaumont
 beaumont-niblett
 beaumont-port
 beaumont-to-port
@@ -5023,7 +5022,6 @@ cools
 coon
 coop
 cooped
-cooper
 cooperage
 cooperate
 cooperation
@@ -6277,6 +6275,7 @@ die
 diebold
 died
 diehard
+dies
 diesel
 diesel-powered
 diet
@@ -13240,7 +13239,6 @@ lived
 liveliest
 livelihood
 livelihoods
-lively
 liver
 liverpool
 livery
@@ -14008,7 +14006,6 @@ men
 men.78a
 menace
 menacing
-mendenhall
 mendico
 menfolk
 menhaden
@@ -15150,7 +15147,6 @@ normal-sized
 normalcy
 normally
 normandy
-north
 north-bound
 north-south
 northbound
