@@ -84,10 +84,16 @@ void CollectData
 // to be output when processing is complete
 void CollectOutput( CString& input, bool bConsole = false )
 {
-	const int nPos = input.FindOneOf( _T( " " ) );
-	if ( nPos == -1 )
+	// if we are outputting names, there should be at least one space
+	// so when m_nArgs == 2, there is no switch parameter for default
+	// behavior of reading the words file and outputting the names file
+	if ( m_nArgs == 2 )
 	{
-		return;
+		const int nPos = input.FindOneOf( _T( " " ) );
+		if ( nPos == -1 )
+		{
+			return;
+		}
 	}
 
 	CollectData( input, m_TotalOutput, bConsole );
